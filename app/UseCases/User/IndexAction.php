@@ -25,8 +25,6 @@ final class IndexAction
     ): LengthAwarePaginator {
         $query = User::query();
 
-        $query->withTrashed();
-
         if ($keyword !== null && $keyword !== '') {
             $query->where(function ($q) use ($keyword) {
                 $q->where('name', 'LIKE', "%{$keyword}%")
@@ -38,7 +36,10 @@ final class IndexAction
             $query->where('role', $role->value);
         }
 
-        if ($status !== null) {
+        // 状態フィルタが「退会済」のときだけ退会済みユーザーが一覧に含まれる
+        if ($status === UserStatus::Withdrawn) {
+            $query->withTrashed()->where('status', UserStatus::Withdrawn);
+        } else if ($status !== null) {
             $query->where('status', $status->value);
         }
 

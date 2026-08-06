@@ -39,7 +39,7 @@ final class IndexAction
         // 状態フィルタが「退会済」のときだけ退会済みユーザーが一覧に含まれる
         if ($status === UserStatus::Withdrawn) {
             $query->withTrashed()->where('status', UserStatus::Withdrawn);
-        } else if ($status !== null) {
+        } elseif ($status !== null) {
             $query->where('status', $status->value);
         }
 

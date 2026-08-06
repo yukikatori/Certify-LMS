@@ -316,7 +316,7 @@ class CrudTest extends TestCase
             'assigned_by_user_id' => $admin->id,
             'assigned_at' => now(),
         ]);
-        
+
         [, , $section] = $this->makePartChain($cert);
         $category = $this->makeCategory($cert);
         $question = SectionQuestion::factory()

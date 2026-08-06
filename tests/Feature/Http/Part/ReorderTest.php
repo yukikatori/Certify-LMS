@@ -58,7 +58,7 @@ class ReorderTest extends TestCase
             'assigned_by_user_id' => $admin->id,
             'assigned_at' => now(),
         ]);
-        
+
         $a = Part::factory()->forCertification($cert)->state(['order' => 1])->create();
         $b = Part::factory()->forCertification($cert)->state(['order' => 2])->create();
         $c = Part::factory()->forCertification($cert)->state(['order' => 3])->create();

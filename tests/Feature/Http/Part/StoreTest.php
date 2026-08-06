@@ -65,7 +65,7 @@ class StoreTest extends TestCase
             'assigned_by_user_id' => $admin->id,
             'assigned_at' => now(),
         ]);
-        
+
         Part::factory()->forCertification($cert)->state(['order' => 1])->create();
 
         $response = $this->actingAs($coach)

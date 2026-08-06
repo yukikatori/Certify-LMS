@@ -103,7 +103,7 @@ class PublishTest extends TestCase
             'assigned_by_user_id' => $admin->id,
             'assigned_at' => now(),
         ]);
-        
+
         $part = Part::factory()->forCertification($cert)->published()->create();
 
         $this->actingAs($coach)

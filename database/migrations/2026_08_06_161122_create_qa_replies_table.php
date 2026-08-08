@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('qa_threads', function (Blueprint $table) {
+        Schema::create('qa_replies', function (Blueprint $table) {
             $table->ulid('id')->primary();
+            $table->foreignUlid('qa_thread_id')->constrained()->onDelete('cascade');
             $table->foreignUlid('user_id')->constrained()->onDelete('cascade');
-            $table->foreignUlid('certification_id')->constrained()->onDelete('cascade');
-            $table->string('title', 200);
             $table->text('body');
-            $table->tinyInteger('published_status');
-            $table->integer('replies_count')->default(0);
-            $table->dateTime('last_replied_at')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('qa_threads');
+        Schema::dropIfExists('qa_replies');
     }
 };

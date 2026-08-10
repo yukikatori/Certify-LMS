@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\QaThreadStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -17,11 +18,11 @@ class QaThread extends Model
         'certification_id',
         'title',
         'body',
-        'is_resolved'
+        'status',
     ];
 
     protected $casts = [
-        'is_resolved' => 'boolean',
+        'status' => QaThreadStatus::class,
     ];
 
     /**
@@ -46,7 +47,7 @@ class QaThread extends Model
      * 質問掲示板：投稿に紐づく返信
      * @return HasMany<QaReply, $this>
      */
-    public function qaReplies(): HasMany
+    public function replies(): HasMany
     {
         return $this->hasMany(QaReply::class, 'qa_thread_id');
     }

@@ -6,6 +6,7 @@ namespace App\UseCases\QaBoard;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use App\Enums\QaThreadStatus;
 use App\Enums\UserRole;
 use App\Models\Certification;
 use App\Models\QaThread;
@@ -29,12 +30,15 @@ final class IndexAction
         // viewerが閲覧可能な資格IDの取得
         $allowedCertIds = match ($viewer->role) {
             UserRole::Student => Certification::published()->pluck('id'),
-            UserRole::Coach   => $viewer->assignedCertifications()->pluck('id'),
+            UserRole::Coach   => $viewer->assignedCertifications()
+                                    ->published()
+                                    ->pluck('certifications.id'),
             default           => collect(),
         };
 
         $query = QaThread::query()
             ->with('certification')
+            ->withCount('replies')
             ->whereIn('certification_id', $allowedCertIds);
 
         // フィルタ処理
@@ -45,10 +49,10 @@ final class IndexAction
             });
         }
 
-        if ($status === 'resolved') {
-            $query->where('is_resolved', true);
-        } elseif ($status === 'unresolved') {
-            $query->where('is_resolved', false);
+        if ($status === QaThreadStatus::Resolved->value) {
+            $query->where('status', QaThreadStatus::Resolved->value);
+        } elseif ($status === QaThreadStatus::Unresolved->value) {
+            $query->where('status', QaThreadStatus::Unresolved->value);
         }
 
         if ($certificationId !== null && $certificationId !== '') {
@@ -56,7 +60,7 @@ final class IndexAction
         }
 
         return $query
-            ->orderByDesc('is_resolved')
+            ->orderByDesc('status')
             ->orderByDesc('updated_at')
             ->paginate($perPage)
             ->withQueryString();

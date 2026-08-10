@@ -7,7 +7,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Enums\PublishedStatus;
 use App\Http\Requests\QaBoard\IndexRequest;
+use App\Http\Requests\QaBoard\StoreRequest;
+use App\Http\Requests\QaBoard\StoreReplyRequest;
+use App\Http\Requests\QaBoard\UpdateRequest;
+use App\Http\Requests\QaBoard\UpdateReplyRequest;
+use App\Models\Certification;
+use App\Models\QaReply;
+use App\Models\QaThread;
+use App\UseCases\QaBoard\DestroyAction;
+use App\UseCases\QaBoard\DestroyReplyAction;
 use App\UseCases\QaBoard\IndexAction;
+use App\UseCases\QaBoard\ResolveAction;
+use App\UseCases\QaBoard\StoreAction;
+use App\UseCases\QaBoard\StoreReplyAction;
+use App\UseCases\QaBoard\UnresolveAction;
+use App\UseCases\QaBoard\UpdateAction;
+use App\UseCases\QaBoard\UpdateReplyAction;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 /**
@@ -27,7 +43,7 @@ use Illuminate\View\View;
 class QaBoardController extends Controller
 {
     /**
-     * 質問掲示板の一覧表示、フィルタ/ページネーションあり
+     * 質問掲示板の一覧表示、フィルタ/ページネーションあり (受講生/コーチ)
      */
     public function index(IndexRequest $request, IndexAction $action): View 
     {
@@ -50,5 +66,170 @@ class QaBoardController extends Controller
             'certifications' => $action->certifications(), 
             'publishedStatus' => \App\Enums\CertificationStatus::Published,
         ]);
+    }
+
+    /**
+     * 質問掲示板の質問詳細画面表示 (受講生のみ)
+     */
+    public function show(QaThread $thread): View
+    {
+        $this->authorize('view', $thread);
+
+        $thread->load(['replies.user', 'certification']);
+
+        return view('qa-thread.show', [
+            'thread' => $thread,
+            'replies' => $thread->replies ?? collect(),
+        ]);
+    }
+
+    /**
+     * 質問掲示板の質問新規作成画面表示 (受講生のみ)
+     */
+    public function create(): View
+    {
+        $this->authorize('create', QaThread::class);
+
+        return view('qa-thread.create', [
+            'certifications' => Certification::published()->orderBy('name')->get(),
+        ]);
+    }
+
+    /**
+     * 質問掲示板の質問新規作成 (受講生のみ)
+     */
+    public function store(StoreRequest $request, StoreAction $action): RedirectResponse
+    {
+        $thread = $action($request->user(), $request->validated());
+
+        return redirect()
+            ->route('qa-board.show', $thread)
+            ->with('success', '質問を作成しました。');
+    }
+
+    /**
+     * 質問掲示板の質問編集画面表示 (投稿者のみ)
+     */
+    public function edit(QaThread $thread): View
+    {
+        $this->authorize('update', $thread);
+
+        return view('qa-thread.edit', [
+            'thread' => $thread,
+        ]);
+    }
+
+    /**
+     * 質問掲示板の質問編集 (投稿者のみ)
+     */
+    public function update(QaThread $thread, UpdateRequest $request, UpdateAction $action): RedirectResponse
+    {
+        $action($thread, $request->validated());
+
+        return redirect()
+            ->route('qa-board.show', $thread)
+            ->with('success', '質問を更新しました。');
+    }
+
+    /**
+     * 質問掲示板の質問削除 (投稿者のみ)
+     */
+    public function destroy(QaThread $thread, DestroyAction $action): RedirectResponse
+    {
+        $this->authorize('delete', $thread);
+
+        $action($thread);
+
+        return redirect()
+            ->route('qa-board.index')
+            ->with('success', '質問を削除しました。');
+    }
+
+    /**
+     * 質問掲示板の質問を解決済に変更 (投稿者のみ)
+     */
+    public function resolve(QaThread $thread, ResolveAction $action):RedirectResponse
+    {
+        $this->authorize('resolve', $thread);
+
+        $action($thread);
+
+        return redirect()
+            ->route('qa-board.show', $thread)
+            ->with('success', '質問を解決済にしました。');
+    }
+
+    /**
+     * 質問掲示板の質問を未解決に変更 (投稿者のみ)
+     */
+    public function unresolve(QaThread $thread, UnresolveAction $action):RedirectResponse
+    {
+        $this->authorize('unresolve', $thread);
+
+        $action($thread);
+
+        return redirect()
+            ->route('qa-board.show', $thread)
+            ->with('success', '質問を未解決に戻しました。');
+    }
+
+    /**
+     * 質問掲示板の質問へ回答 (受講生/コーチ)
+     */
+    public function storeReply(StoreReplyRequest $request, QaThread $thread, StoreReplyAction $action): RedirectResponse
+    {
+        $action($request->user(), $thread, $request->validated());
+
+        return redirect()
+            ->route('qa-board.show', $thread)
+            ->with('success', '質問に回答しました。');
+    }
+
+    /**
+     * 質問掲示板の質問への回答の編集画面表示 (投稿者のみ)
+     */
+    public function editReply($thread, $reply): View
+    {
+        $thread = QaThread::findOrFail($thread);
+        $reply = QaReply::findOrFail($reply);
+
+        $this->authorize('update', $reply);
+
+        return view('qa-thread.reply-edit', [
+            'thread' => $thread,
+            'reply' => $reply,
+        ]);
+    }
+
+    /**
+     * 質問掲示板の質問への回答編集 (投稿者のみ)
+     */
+    public function updateReply($thread, $reply, UpdateReplyRequest $request, UpdateReplyAction $action): RedirectResponse
+    {
+        $thread = QaThread::findOrFail($thread);
+        $reply = QaReply::findOrFail($reply);
+
+        $action($reply, $request->validated());
+
+        return redirect()
+            ->route('qa-board.show', $thread)
+            ->with('success', '回答を更新しました。');
+    }
+
+    /**
+     * 質問掲示板の質問への回答削除 (投稿者のみ)
+     */
+    public function destroyReply($thread, $reply, DestroyReplyAction $action): RedirectResponse
+    {
+        $thread = QaThread::findOrFail($thread);
+        $reply = QaReply::findOrFail($reply);
+
+        $this->authorize('delete', $reply);
+
+        $action($reply);
+
+        return redirect()
+            ->route('qa-board.show', $thread)
+            ->with('success', '回答を削除しました。');
     }
 }

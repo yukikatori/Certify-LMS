@@ -44,7 +44,8 @@ use App\Policies\MockExamQuestionPolicy;
 use App\Policies\MockExamSessionPolicy;
 use App\Policies\PartPolicy;
 use App\Policies\PartViewPolicy;
-use App\Policies\QaBoardPolicy;
+use App\Policies\QaReplyPolicy;
+use App\Policies\QaThreadPolicy;
 use App\Policies\QuestionCategoryPolicy;
 use App\Policies\SectionImagePolicy;
 use App\Policies\SectionPolicy;
@@ -89,7 +90,8 @@ class AuthServiceProvider extends ServiceProvider
         SectionQuestionAttempt::class => SectionQuestionAttemptPolicy::class,
         Meeting::class => MeetingPolicy::class,
         CoachAvailability::class => CoachAvailabilityPolicy::class,
-        QaThread::class => QaBoardPolicy::class,
+        QaThread::class => QaThreadPolicy::class,
+        QaReply::class => QaReplyPolicy::class,
     ];
 
     /**

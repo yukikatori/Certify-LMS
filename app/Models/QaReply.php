@@ -30,7 +30,7 @@ class QaReply extends Model
      * 質問掲示板：返信が紐づく投稿
      * @return BelongsTo<QaThread, $this>
      */
-    public function qaThread(): BelongsTo
+    public function thread(): BelongsTo
     {
         return $this->belongsTo(QaThread::class, 'qa_thread_id');
     }

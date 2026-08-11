@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\UseCases\Learning;
 
-use App\Enums\EnrollmentStatus;
+use App\Enums\CertificationStatus;
 use App\Enums\ContentStatus;
+use App\Enums\EnrollmentStatus;
 use App\Models\Part;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +28,14 @@ final class ShowPartAction
     {
         $part->loadMissing('certification');
 
-        if ($part->status !== ContentStatus::Published) {
+        // Part が null または Draft → 404
+        if ($part === null || $part->status !== ContentStatus::Published) {
+            throw new NotFoundHttpException;
+        }
+
+        // Certification が null または Archived → 404
+        if ($part->certification === null ||
+            $part->certification->status === CertificationStatus::Archived) {
             throw new NotFoundHttpException;
         }
 

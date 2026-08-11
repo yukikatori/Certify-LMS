@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\UseCases\Learning;
 
+use App\Enums\EnrollmentStatus;
 use App\Enums\ContentStatus;
 use App\Models\Chapter;
 use App\Models\SectionProgress;
@@ -31,14 +32,21 @@ final class ShowChapterAction
             throw new NotFoundHttpException;
         }
 
+        $enrollment = $student->enrollments()
+            ->where('certification_id', $chapter->part->certification_id)
+            ->first();
+        
+        if ($enrollment === null || ! in_array($enrollment->status, [
+            EnrollmentStatus::Learning,
+            EnrollmentStatus::Passed,
+        ], true)) {
+            abort(403);
+        }
+
         $sections = $chapter->sections()
             ->where('status', ContentStatus::Published->value)
             ->ordered()
             ->get();
-
-        $enrollment = $student->enrollments()
-            ->where('certification_id', $chapter->part->certification_id)
-            ->first();
 
         $completedSectionIds = [];
         if ($enrollment !== null && $sections->isNotEmpty()) {

@@ -37,9 +37,9 @@ final class ShowChapterAction
             throw new NotFoundHttpException;
         }
 
-        // Certification が null または Archived → 404
+        // Certification が null または 公開中ではない → 404
         if ($chapter->part->certification === null ||
-            $chapter->part->certification->status === CertificationStatus::Archived) {
+            $chapter->part->certification->status !== ContentStatus::Published) {
             throw new NotFoundHttpException;
         }
 

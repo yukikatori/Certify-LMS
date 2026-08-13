@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Enums\PublishedStatus;
 use App\Http\Requests\QaBoard\IndexRequest;
 use App\Http\Requests\QaBoard\StoreRequest;
 use App\Http\Requests\QaBoard\StoreReplyRequest;
@@ -63,8 +62,8 @@ class QaBoardController extends Controller
                 'status' => $validated['status'] ?? '',
                 'certification_id' => $validated['certification_id'] ?? '',
             ],
-            'certifications' => $action->certifications(), 
-            'publishedStatus' => \App\Enums\CertificationStatus::Published,
+            'certifications' => $action->certifications($request->user()), 
+            'publishedStatus' => $action->publishedStatus($request->user()),
         ]);
     }
 

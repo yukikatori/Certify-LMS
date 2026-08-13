@@ -22,11 +22,11 @@ use App\Models\QaThread;
 class QaThreadPolicy
 {
     /**
-     * 質問掲示板の一覧表示、受講生 / コーチがアクセス可
+     * 質問掲示板の一覧表示、受講生 / コーチ / 管理者がアクセス可
      */
     public function viewAny(User $auth): bool
     {
-        return in_array($auth->role, [UserRole::Student, UserRole::Coach], true);
+        return in_array($auth->role, [UserRole::Student, UserRole::Coach, UserRole::Admin], true);
     }
 
     /**

@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Models\QaThread;
 
 /**
- * 質問掲示板（受講生 / コーチ）一覧の絞り込みリクエスト
+ * 質問掲示板一覧の絞り込みリクエスト
  */
 class IndexRequest extends FormRequest
 {

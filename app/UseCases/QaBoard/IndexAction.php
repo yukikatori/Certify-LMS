@@ -6,6 +6,7 @@ namespace App\UseCases\QaBoard;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use App\Enums\CertificationStatus;
 use App\Enums\QaThreadStatus;
 use App\Enums\UserRole;
 use App\Models\Certification;
@@ -33,6 +34,7 @@ final class IndexAction
             UserRole::Coach   => $viewer->assignedCertifications()
                                     ->published()
                                     ->pluck('certifications.id'),
+            UserRole::Admin   => Certification::pluck('id'),
             default           => collect(),
         };
 
@@ -66,8 +68,19 @@ final class IndexAction
             ->withQueryString();
     }
 
-    public function certifications(): Collection
+    public function certifications(User $viewer): Collection
     {
-        return Certification::published()->get(['id', 'name', 'status']);
+        return match ($viewer->role) {
+            UserRole::Admin => Certification::get(['id', 'name', 'status']),
+            default         => Certification::published()->get(['id', 'name', 'status']),
+        };
+    }
+
+    public function publishedStatus(User $viewer): ?string
+    {
+        return match ($viewer->role) {
+            UserRole::Admin => null,
+            default         => CertificationStatus::Published->value,
+        };
     }
 }

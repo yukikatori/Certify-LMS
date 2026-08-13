@@ -228,14 +228,14 @@ class BrowseControllerTest extends TestCase
     public function test_show_section_404_when_draft_chapter(): void
     {
         [$student, $certification] = $this->buildStudentAndCertification();
-        $part = Part::factory()->for($certification)->create(['status' => ContentStatus::Draft->value]);
+        $part = Part::factory()->for($certification)->create(['status' => ContentStatus::Published->value]);
         $chapter = Chapter::factory()->for($part)->create(['status' => ContentStatus::Draft->value]);
         $section = Section::factory()->for($chapter)->create([
             'status' => ContentStatus::Published->value,
             'body' => '# テスト本文',
         ]);
 
-        $response = $this->actingAs($student)->get(route('learning.sections.show', $chapter));
+        $response = $this->actingAs($student)->get(route('learning.sections.show', $section));
 
         $response->assertNotFound();
     }

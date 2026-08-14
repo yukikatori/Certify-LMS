@@ -30,13 +30,14 @@ class QaThreadPolicy
     }
 
     /**
-     * 質問掲示板の質問詳細表示、受講生 / コーチがアクセス可
+     * 質問掲示板の質問詳細表示、受講生 / コーチ / 管理者がアクセス可
      */
     public function view(User $auth, QaThread $thread): bool
     {
         return match ($auth->role) {
             UserRole::Coach => $thread->certification->coaches->contains('id', $auth->id),
             UserRole::Student => $thread->certification->status === CertificationStatus::Published,
+            UserRole::Admin => true,
         };
     }
 
@@ -57,11 +58,11 @@ class QaThreadPolicy
     }
 
     /**
-     * 質問掲示板の質問削除、投稿者がアクセス可
+     * 質問掲示板の質問削除、投稿者 / 管理者がアクセス可
      */
     public function delete(User $auth, QaThread $thread): bool
     {
-        return $auth->id === $thread->user->id;
+        return $auth->id === $thread->user->id || $auth->role === UserRole::Admin;
     }
 
     /**

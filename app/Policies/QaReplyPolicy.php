@@ -29,6 +29,7 @@ class QaReplyPolicy
         return match ($auth->role) {
             UserRole::Coach => $thread->certification->coaches->contains('id', $auth->id),
             UserRole::Student => $thread->certification->status === CertificationStatus::Published,
+            UserRole::Admin => false,
         };
     }
 
@@ -41,10 +42,10 @@ class QaReplyPolicy
     }
 
     /**
-     * 質問掲示板の質問への回答削除、投稿者がアクセス可
+     * 質問掲示板の質問への回答削除、投稿者 / 管理者がアクセス可
      */
     public function delete(User $auth, QaReply $reply): bool
     {
-        return $auth->id === $reply->user->id;
+        return $auth->id === $reply->user->id || $auth->role === UserRole::Admin;
     }
 }

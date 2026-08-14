@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\QaBoard\IndexRequest;
+use App\Models\QaReply;
+use App\Models\QaThread;
+use App\UseCases\QaBoard\DestroyAction;
+use App\UseCases\QaBoard\DestroyReplyAction;
 use App\UseCases\QaBoard\IndexAction;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 /**
@@ -48,5 +53,51 @@ class QaBoardManagementController extends Controller
             'certifications' => $action->certifications($request->user()), 
             'publishedStatus' => $action->publishedStatus($request->user()),
         ]);
+    }
+
+    /**
+     * 質問掲示板の質問詳細画面表示 (管理者)
+     */
+    public function show(QaThread $thread): View
+    {
+        $this->authorize('view', $thread);
+
+        $thread->load(['replies.user', 'certification']);
+
+        return view('qa-thread.show', [
+            'thread' => $thread,
+            'replies' => $thread->replies ?? collect(),
+        ]);
+    }
+
+    /**
+     * 質問掲示板の質問削除 (管理者)
+     */
+    public function destroy(QaThread $thread, DestroyAction $action): RedirectResponse
+    {
+        $this->authorize('delete', $thread);
+
+        $action($thread);
+
+        return redirect()
+            ->route('admin.qa-board.index')
+            ->with('success', '質問を削除しました。');
+    }
+
+    /**
+     * 質問掲示板の質問への回答削除 (管理者)
+     */
+    public function destroyReply($thread, $reply, DestroyReplyAction $action): RedirectResponse
+    {
+        $thread = QaThread::findOrFail($thread);
+        $reply = QaReply::findOrFail($reply);
+
+        $this->authorize('delete', $reply);
+
+        $action($reply);
+
+        return redirect()
+            ->route('admin.qa-board.show', $thread)
+            ->with('success', '回答を削除しました。');
     }
 }

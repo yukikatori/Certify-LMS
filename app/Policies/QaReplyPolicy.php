@@ -27,7 +27,8 @@ class QaReplyPolicy
     public function create(User $auth, QaThread $thread): bool
     {
         return match ($auth->role) {
-            UserRole::Coach => $thread->certification->coaches->contains('id', $auth->id),
+            UserRole::Coach => $thread->certification->coaches->contains('id', $auth->id)
+                && $thread->certification->status === CertificationStatus::Published,
             UserRole::Student => $thread->certification->status === CertificationStatus::Published,
             UserRole::Admin => false,
         };
@@ -38,7 +39,8 @@ class QaReplyPolicy
      */
     public function update(User $auth, QaReply $reply): bool
     {
-        return $auth->id === $reply->user_id;
+        return $auth->id === $reply->user_id
+            && $reply->thread->certification->status === CertificationStatus::Published;
     }
 
     /**
@@ -46,6 +48,11 @@ class QaReplyPolicy
      */
     public function delete(User $auth, QaReply $reply): bool
     {
-        return $auth->id === $reply->user->id || $auth->role === UserRole::Admin;
+        return match ($auth->role) {
+            UserRole::Student =>
+                $auth->id === $reply->user_id
+                && $reply->thread->certification->status === CertificationStatus::Published,
+            UserRole::Admin => true,
+        };
     }
 }

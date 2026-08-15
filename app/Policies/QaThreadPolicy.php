@@ -35,7 +35,8 @@ class QaThreadPolicy
     public function view(User $auth, QaThread $thread): bool
     {
         return match ($auth->role) {
-            UserRole::Coach => $thread->certification->coaches->contains('id', $auth->id),
+            UserRole::Coach => $thread->certification->coaches->contains('id', $auth->id)
+                && $thread->certification->status === CertificationStatus::Published,
             UserRole::Student => $thread->certification->status === CertificationStatus::Published,
             UserRole::Admin => true,
         };
@@ -54,7 +55,7 @@ class QaThreadPolicy
      */
     public function update(User $auth, QaThread $thread): bool
     {
-        return $auth->id === $thread->user->id;
+        return $auth->id === $thread->user->id && $thread->certification->status === CertificationStatus::Published;
     }
 
     /**
@@ -62,7 +63,12 @@ class QaThreadPolicy
      */
     public function delete(User $auth, QaThread $thread): bool
     {
-        return $auth->id === $thread->user->id || $auth->role === UserRole::Admin;
+        return match ($auth->role) {
+            UserRole::Student => 
+                $auth->id === $thread->user->id 
+                && $thread->certification->status === CertificationStatus::Published,
+            UserRole::Admin => true,
+        };
     }
 
     /**
@@ -70,7 +76,7 @@ class QaThreadPolicy
      */
     public function resolve(User $auth, QaThread $thread): bool
     {
-        return $auth->id === $thread->user->id;
+        return $auth->id === $thread->user->id && $thread->certification->status === CertificationStatus::Published;;
     }
 
     /**
@@ -78,6 +84,6 @@ class QaThreadPolicy
      */
     public function unresolve(User $auth, QaThread $thread): bool
     {
-        return $auth->id === $thread->user->id;
+        return $auth->id === $thread->user->id && $thread->certification->status === CertificationStatus::Published;;
     }
 }

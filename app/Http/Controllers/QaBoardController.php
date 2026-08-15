@@ -190,7 +190,7 @@ class QaBoardController extends Controller
     public function editReply($thread, $reply): View
     {
         $thread = QaThread::findOrFail($thread);
-        $reply = QaReply::findOrFail($reply);
+        $reply = $thread->replies()->findOrFail($reply);
 
         $this->authorize('update', $reply);
 
@@ -206,7 +206,7 @@ class QaBoardController extends Controller
     public function updateReply($thread, $reply, UpdateReplyRequest $request, UpdateReplyAction $action): RedirectResponse
     {
         $thread = QaThread::findOrFail($thread);
-        $reply = QaReply::findOrFail($reply);
+        $reply = $thread->replies()->findOrFail($reply);
 
         $action($reply, $request->validated());
 
@@ -221,7 +221,7 @@ class QaBoardController extends Controller
     public function destroyReply($thread, $reply, DestroyReplyAction $action): RedirectResponse
     {
         $thread = QaThread::findOrFail($thread);
-        $reply = QaReply::findOrFail($reply);
+        $reply = $thread->replies()->findOrFail($reply);
 
         $this->authorize('delete', $reply);
 

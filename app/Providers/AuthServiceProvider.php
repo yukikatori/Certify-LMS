@@ -18,6 +18,7 @@ use App\Models\MockExam;
 use App\Models\MockExamQuestion;
 use App\Models\MockExamSession;
 use App\Models\Part;
+use App\Models\QaReply;
 use App\Models\QaThread;
 use App\Models\QuestionCategory;
 use App\Models\Section;

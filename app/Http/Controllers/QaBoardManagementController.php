@@ -90,7 +90,7 @@ class QaBoardManagementController extends Controller
     public function destroyReply($thread, $reply, DestroyReplyAction $action): RedirectResponse
     {
         $thread = QaThread::findOrFail($thread);
-        $reply = QaReply::findOrFail($reply);
+        $reply = $thread->replies()->findOrFail($reply);
 
         $this->authorize('delete', $reply);
 

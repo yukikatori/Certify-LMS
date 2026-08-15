@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\QaBoard;
 
+use App\Enums\CertificationStatus;
 use App\Models\QaThread;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -25,7 +26,11 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'certification_id' => ['required', 'ulid', 'exists:certifications,id'],
+            'certification_id' => [
+                'required', 
+                'ulid', 
+                Rule::exists('certifications', 'id')->where('status', CertificationStatus::Published),
+            ],
             'title' => ['required', 'string', 'max:200'],
             'body' => ['required', 'string', 'max:5000'],
         ];

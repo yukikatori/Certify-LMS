@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('qa_threads', function (Blueprint $table) {
             $table->dropColumn('is_resolved');
-            $table->string('status')->default('unresolve');
+            $table->string('status')->default('unresolved');
         });
     }
 

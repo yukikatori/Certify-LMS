@@ -52,6 +52,10 @@ class QaReplyPolicy
             UserRole::Student =>
                 $auth->id === $reply->user_id
                 && $reply->thread->certification->status === CertificationStatus::Published,
+            UserRole::Coach => 
+                $auth->id === $reply->user_id
+                && $reply->thread->certification->coaches->contains('id', $auth->id)
+                && $reply->thread->certification->status === CertificationStatus::Published,
             UserRole::Admin => true,
         };
     }

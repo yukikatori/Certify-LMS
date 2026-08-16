@@ -92,7 +92,7 @@ final class OnboardAction
             // 情報の更新
             $user->forceFill($attrs)->save();
 
-            // ユーザーの状態変更
+            // ユーザーの状態変更 (B-B-12用の修正)
             $user->status = UserStatus::InProgress;
             $user->save();
 

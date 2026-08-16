@@ -15,7 +15,7 @@ use App\Models\User;
 
 /**
  * 質問掲示板の一覧をフィルタ付きで取得するUseCase。
- * 未解決 →  解決済み の更新順で並び、同 status 内は最終更新の降順。
+ * 未解決 →  解決済み で並び、同 status 内は最終更新の降順。
  */
 
 final class IndexAction

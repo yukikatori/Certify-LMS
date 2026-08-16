@@ -39,8 +39,16 @@ class QaReplyPolicy
      */
     public function update(User $auth, QaReply $reply): bool
     {
-        return $auth->id === $reply->user_id
-            && $reply->thread->certification->status === CertificationStatus::Published;
+        return match ($auth->role) {
+            UserRole::Student =>
+                $auth->id === $reply->user_id
+                && $reply->thread->certification->status === CertificationStatus::Published,
+            UserRole::Coach =>
+                $auth->id === $reply->user_id
+                && $reply->thread->certification->coaches->contains('id', $auth->id)
+                && $reply->thread->certification->status === CertificationStatus::Published,
+            UserRole::Admin => false,
+        };
     }
 
     /**
@@ -52,7 +60,7 @@ class QaReplyPolicy
             UserRole::Student =>
                 $auth->id === $reply->user_id
                 && $reply->thread->certification->status === CertificationStatus::Published,
-            UserRole::Coach => 
+            UserRole::Coach =>
                 $auth->id === $reply->user_id
                 && $reply->thread->certification->coaches->contains('id', $auth->id)
                 && $reply->thread->certification->status === CertificationStatus::Published,

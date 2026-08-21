@@ -144,6 +144,8 @@ Route::middleware(['auth', 'role:student', 'active-learning'])
             ->name('hourTarget.upsert');
         Route::delete('enrollments/{enrollment}/hour-target', [LearningHourTargetController::class, 'destroy'])
             ->name('hourTarget.destroy');
+
+            // test
     });
 
 // ============================================================

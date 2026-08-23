@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\UseCases\Learning;
 
-use App\Enums\CertificationStatus;
-use App\Enums\ContentStatus;
 use App\Enums\EnrollmentStatus;
+use App\Enums\ContentStatus;
 use App\Models\Section;
 use App\Models\SectionProgress;
 use App\Models\User;
@@ -36,24 +35,9 @@ final class ShowSectionAction
         $chapter = $section->chapter;
         $part = $chapter?->part;
 
-        // Section が Draft または null → 404
-        if ($section === null || $section->status !== ContentStatus::Published) {
-            throw new NotFoundHttpException;
-        }
-
-        // Chapter が Draft または null → 404
-        if ($chapter === null || $chapter->status !== ContentStatus::Published) {
-            throw new NotFoundHttpException;
-        }
-
-        // Part が null または Draft → 404
-        if ($part === null || $part->status !== ContentStatus::Published) {
-            throw new NotFoundHttpException;
-        }
-
-        // Certification が null または Archived → 404
-        if ($part->certification === null ||
-            $part->certification->status === CertificationStatus::Archived) {
+        if ($section->status !== ContentStatus::Published
+            || $chapter === null || $chapter->status !== ContentStatus::Published
+            || $part === null || $part->status !== ContentStatus::Published) {
             throw new NotFoundHttpException;
         }
 

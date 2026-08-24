@@ -39,7 +39,7 @@ final class ShowChapterAction
 
         // Certification が null または 公開中ではない → 404
         if ($chapter->part->certification === null ||
-            $chapter->part->certification->status !== ContentStatus::Published) {
+            $chapter->part->certification->status !== CertificationStatus::Published) {
             throw new NotFoundHttpException;
         }
 

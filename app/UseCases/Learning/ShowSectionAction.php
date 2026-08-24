@@ -53,7 +53,7 @@ final class ShowSectionAction
 
         // Certification が null または 公開中ではない → 404
         if ($part->certification === null ||
-            $part->certification->status !== ContentStatus::Published) {
+            $part->certification->status !== CertificationStatus::Published) {
             throw new NotFoundHttpException;
         }
 

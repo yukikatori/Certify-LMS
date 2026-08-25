@@ -195,7 +195,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         ->name('admin.enrollments.fail');
 
     // 面談パックマスタ管理
-    Route::resource('meeting-packs', MeetingPackController::class)->names('admin.meeting-packs');
+    Route::resource('meeting-packs', MeetingPackController::class)
+        ->parameters(['meeting-packs' => 'plan'])
+        ->names('admin.meeting-packs');
     Route::post('meeting-packs/{plan}/publish', [MeetingPackController::class, 'publish'])
         ->name('admin.meeting-packs.publish');
     Route::post('meeting-packs/{plan}/unpublish', [MeetingPackController::class, 'unpublish'])

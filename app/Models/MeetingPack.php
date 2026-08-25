@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * 追加面談購入用の SKU マスタ。受講生が dashboard から購入する都度購入型の面談回数パック。
@@ -44,6 +45,10 @@ class MeetingPack extends Model
         'sort_order' => 'integer',
     ];
 
+    protected $attributes = [
+        'status' => MeetingPackStatus::Draft->value,
+    ];
+
     /**
      * @return BelongsTo<User, $this>
      */
@@ -58,6 +63,16 @@ class MeetingPack extends Model
     public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by_user_id');
+    }
+
+    /**
+     * 追加面談の購入情報 一覧。
+     *
+     * @return HasMany<Payment, $this>
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'meeting_pack_id');
     }
 
     /**

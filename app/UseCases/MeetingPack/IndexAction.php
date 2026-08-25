@@ -34,8 +34,8 @@ final class IndexAction
         }
 
         return $query
-        ->orderByDesc('updated_at')
-        ->paginate($perPage);
+            ->orderByDesc('updated_at')
+            ->paginate($perPage);
     }
 
 }

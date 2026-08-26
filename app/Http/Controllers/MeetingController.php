@@ -206,7 +206,7 @@ class MeetingController extends Controller
                     'meeting_url_snapshot' => $coach->meeting_url,
                 ]);
             } catch (UniqueConstraintViolationException $e) {
-                // 同時刻に他受講生が先行予約した race condition: UNIQUE(coach_id, scheduled_at) で弾かれた
+                // 同時刻に他受講生が先行予約した race condition: UNIQUE で弾かれた
                 throw new MeetingNoAvailableCoachException($e);
             }
 

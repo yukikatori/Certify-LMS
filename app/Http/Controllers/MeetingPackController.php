@@ -144,7 +144,7 @@ class MeetingPackController extends Controller
 
         return redirect()
             ->route('admin.meeting-packs.show', $plan)
-            ->with('success', '面談パックの公開を停止しました。');
+            ->with('success', '面談パックを下書きに戻しました。');
     }
 
     /**

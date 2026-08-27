@@ -27,10 +27,10 @@ class StoreRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:100'],
             'description' => ['nullable', 'string', 'max:2000'],
-            'meeting_count' => ['required', 'integer', 'max:100'],
-            'price' => ['required', 'integer', 'max:1000000'],
+            'meeting_count' => ['required', 'integer', 'min:1', 'max:100'],
+            'price' => ['required', 'integer', 'min:0', 'max:1000000'],
             'stripe_price_id' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['required', 'integer', 'max:1000'],
+            'sort_order' => ['required', 'integer', 'min:0'],
         ];
     }
 

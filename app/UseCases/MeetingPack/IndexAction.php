@@ -33,6 +33,17 @@ final class IndexAction
             $query->where('status', $status->value);
         }
 
+        $driver = $query->getConnection()->getDriverName();
+
+        if ($driver === 'mysql') {
+            $query->orderByRaw("FIELD(status, 'published', 'draft', 'archived')");
+        } else {
+            // SQLite では FIELD() が使えないため CASE 式で同等の優先順位を表現する
+            $query->orderByRaw(
+                "CASE status WHEN 'published' THEN 1 WHEN 'draft' THEN 2 WHEN 'archived' THEN 3 ELSE 4 END"
+            );
+        }
+
         return $query
             ->orderByDesc('updated_at')
             ->paginate($perPage);

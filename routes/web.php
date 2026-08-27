@@ -25,6 +25,7 @@ use App\Http\Controllers\MockExamQuestionController;
 use App\Http\Controllers\MockExamSessionController;
 use App\Http\Controllers\MockExamSessionMonitorController;
 use App\Http\Controllers\PartController;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\QuestionCategoryController;
 use App\Http\Controllers\QuizHistoryController;
 use App\Http\Controllers\QuizStatsController;
@@ -192,6 +193,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         ->name('admin.enrollments.updateExamDate');
     Route::post('enrollments/{enrollment}/fail', [EnrollmentManagementController::class, 'fail'])
         ->name('admin.enrollments.fail');
+
+    // プランマスタ管理(プラン本体の CRUD + 状態遷移、admin のみ)
+    Route::resource('plans', PlanController::class)
+        ->names('admin.plans');
+    Route::post('plans/{plan}/publish', [PlanController::class, 'publish'])
+        ->name('admin.plans.publish');
+    Route::post('plans/{plan}/unarchive', [PlanController::class, 'unarchive'])
+        ->name('admin.plans.unarchive');
+    Route::post('plans/{plan}/archive', [PlanController::class, 'archive'])
+        ->name('admin.plans.archive');
 });
 
 // ============================================================

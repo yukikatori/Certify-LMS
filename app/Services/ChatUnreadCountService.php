@@ -38,7 +38,7 @@ class ChatUnreadCountService
 
         return ChatMessage::query()
             ->where('chat_room_id', $room->id)
-            ->where('sender_user_id', '!=', $user->id) 
+            ->where('sender_user_id', '!=', $user->id)
             ->when($member->last_read_at !== null, function ($q) use ($member): void {
                 $q->where('created_at', '>', $member->last_read_at);
             })

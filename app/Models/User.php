@@ -131,6 +131,16 @@ class User extends Authenticatable
     }
 
     /**
+     * 受講生メモの管理（コーチ）に紐づくユーザー
+     *
+     * @return HasMany<EnrollmentNote, $this>
+     */
+    public function notes(): HasMany
+    {
+        return $this->hasMany(EnrollmentNote::class, 'user_id');
+    }
+
+    /**
      * @return HasMany<Certificate, $this>
      */
     public function certificates(): HasMany

@@ -13,6 +13,6 @@ class PlanNotDeletableException extends ConflictHttpException
 {
     public function __construct(?\Throwable $previous = null)
     {
-        parent::__construct('下書き状態かつ、受講中 / 招待中の受講生が紐づいていないプランのみ削除できます。', $previous);
+        parent::__construct('下書き状態かつ受講生が紐づいていないプランのみ削除できます。', $previous);
     }
 }

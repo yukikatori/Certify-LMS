@@ -63,7 +63,7 @@ class PlanController extends Controller
 
         return redirect()
             ->route('admin.plans.show', $plan)
-            ->with('success', 'プランマスタを作成しました。');
+            ->with('success', 'プランを作成しました。');
     }
 
     public function edit(Plan $plan): View
@@ -81,7 +81,7 @@ class PlanController extends Controller
 
         return redirect()
             ->route('admin.plans.show', $plan)
-            ->with('success', 'プランマスタを更新しました。');
+            ->with('success', 'プランを更新しました。');
     }
 
     public function destroy(Plan $plan, DestroyAction $action): RedirectResponse
@@ -92,7 +92,7 @@ class PlanController extends Controller
 
         return redirect()
             ->route('admin.plans.index')
-            ->with('success', 'プランマスタを削除しました。');
+            ->with('success', 'プランを削除しました。');
     }
 
     public function publish(Plan $plan, PublishAction $action): RedirectResponse
@@ -103,7 +103,7 @@ class PlanController extends Controller
 
         return redirect()
             ->route('admin.plans.show', $plan)
-            ->with('success', 'プランマスタを公開しました。');
+            ->with('success', 'プランを公開しました。');
     }
 
     public function archive(Plan $plan, ArchiveAction $action): RedirectResponse
@@ -114,7 +114,7 @@ class PlanController extends Controller
 
         return redirect()
             ->route('admin.plans.show', $plan)
-            ->with('success', 'プランマスタをアーカイブしました。');
+            ->with('success', 'プランをアーカイブしました。');
     }
 
     public function unarchive(Plan $plan, UnarchiveAction $action): RedirectResponse
@@ -125,6 +125,6 @@ class PlanController extends Controller
 
         return redirect()
             ->route('admin.plans.show', $plan)
-            ->with('success', 'プランマスタを下書きへ戻しました。');
+            ->with('success', 'プランを下書きへ戻しました。');
     }
 }

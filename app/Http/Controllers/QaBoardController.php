@@ -103,7 +103,7 @@ class QaBoardController extends Controller
 
         return redirect()
             ->route('qa-board.show', $thread)
-            ->with('success', '質問を作成しました。');
+            ->with('success', 'スレッドを作成しました。');
     }
 
     /**
@@ -123,11 +123,11 @@ class QaBoardController extends Controller
      */
     public function update(QaThread $thread, UpdateRequest $request, UpdateAction $action): RedirectResponse
     {
-        $action($thread, $request->validated());
+        $action($thread, request()->validated());
 
         return redirect()
             ->route('qa-board.show', $thread)
-            ->with('success', '質問を更新しました。');
+            ->with('success', 'スレッドを更新しました。');
     }
 
     /**
@@ -137,11 +137,11 @@ class QaBoardController extends Controller
     {
         $this->authorize('delete', $thread);
 
-        $action($thread);
+        $action(request()->user(), $thread);
 
         return redirect()
             ->route('qa-board.index')
-            ->with('success', '質問を削除しました。');
+            ->with('success', 'スレッドを削除しました。');
     }
 
     /**
@@ -155,7 +155,7 @@ class QaBoardController extends Controller
 
         return redirect()
             ->route('qa-board.show', $thread)
-            ->with('success', '質問を解決済にしました。');
+            ->with('success', 'スレッドを解決済にしました。');
     }
 
     /**
@@ -169,7 +169,7 @@ class QaBoardController extends Controller
 
         return redirect()
             ->route('qa-board.show', $thread)
-            ->with('success', '質問を未解決に戻しました。');
+            ->with('success', 'スレッドを未解決に戻しました。');
     }
 
     /**
@@ -181,7 +181,7 @@ class QaBoardController extends Controller
 
         return redirect()
             ->route('qa-board.show', $thread)
-            ->with('success', '質問に回答しました。');
+            ->with('success', 'スレッドに回答しました。');
     }
 
     /**

@@ -77,11 +77,11 @@ class QaBoardManagementController extends Controller
     {
         $this->authorize('delete', $thread);
 
-        $action($thread);
+        $action(request()->user(), $thread);
 
         return redirect()
             ->route('admin.qa-board.index')
-            ->with('success', '質問を削除しました。');
+            ->with('success', 'スレッドを削除しました。');
     }
 
     /**

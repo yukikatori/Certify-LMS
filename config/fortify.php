@@ -152,6 +152,8 @@ return [
         // Password 更新は本人プロフィール画面 /settings/password で受け、UpdateUserPassword Action を委譲する
         // 自前 Controller(App\Http\Controllers\Settings\PasswordController)経由で扱うため、Fortify 既定の
         // PUT /user/password ルートは登録しない(同 path と /settings/password の二重登録防止)
+        // 認識合わせの結果パスワード変更はFortifyの標準機能を使用する、そのため以下のコードを追加
+        Features::updatePasswords(),
     ],
 
 ];

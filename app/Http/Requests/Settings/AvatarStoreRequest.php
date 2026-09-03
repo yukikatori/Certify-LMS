@@ -22,7 +22,7 @@ class AvatarStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'avatar' => ['required', 'image', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
+            'avatar' => ['required', 'file', 'image', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
         ];
     }
 

@@ -158,7 +158,7 @@ class MeetingController extends Controller
 
     /**
      * 受講生の予約申請。残面談回数を確認し、空き枠から過去実績最少のコーチを自動割当して reserved で確定する。
-     * 同時刻 race condition は (coach_id, scheduled_at) UNIQUE 違反として検知し 409 へ変換する。
+     * 同時刻 race condition はUNIQUE 違反として検知し 409 へ変換する。
      */
     public function store(
         Enrollment $enrollment,

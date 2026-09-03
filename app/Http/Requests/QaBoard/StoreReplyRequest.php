@@ -25,7 +25,7 @@ class StoreReplyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'body' => ['required', 'string', 'max:5000'],
+            'body' => ['required', 'string', 'max:5000', 'not_regex:/\x{3000}/u'],
         ];
     }
 

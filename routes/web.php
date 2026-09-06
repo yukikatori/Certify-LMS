@@ -17,6 +17,7 @@ use App\Http\Controllers\EnrollmentManagementController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\LearningHourTargetController;
 use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\MeetingQuotaController;
 use App\Http\Controllers\MeetingQuotaHistoryController;
 use App\Http\Controllers\MockExamAnswerController;
 use App\Http\Controllers\MockExamCatalogController;
@@ -459,12 +460,22 @@ Route::middleware(['auth', 'role:coach'])
     });
 
 // ============================================================
-// 受講生専用ルート(受講中=in_progress のみ通過)
+// 受講生専用ルート — 面談回数履歴 / 追加面談購入
 // ============================================================
-Route::middleware(['auth', 'role:student', 'active-learning'])->prefix('meeting-quota')->name('meeting-quota.')->group(function () {
-    // 面談回数履歴
-    Route::get('history', [MeetingQuotaHistoryController::class, 'index'])->name('history');
-});
+Route::middleware(['auth', 'role:student', 'active-learning'])
+    ->prefix('meeting-quota')
+    ->name('meeting-quota.')
+    ->group(function () {
+        // 面談回数履歴
+        Route::get('history', [MeetingQuotaHistoryController::class, 'index'])->name('history');
+
+        // 追加面談購入
+        Route::get('checkout', [MeetingQuotaController::class, 'checkout'])->name('checkout.select');
+        Route::post('checkout', [MeetingQuotaController::class, 'store'])->name('checkout.create');
+        Route::get('success', [MeetingQuotaController::class, 'success'])->name('checkout.success');
+    });
+
+
 
 // ============================================================
 // 開発専用: 共通コンポーネントショーケース(APP_ENV=local のみ表示)

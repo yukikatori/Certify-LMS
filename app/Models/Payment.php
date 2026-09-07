@@ -24,14 +24,22 @@ class Payment extends Model
         'user_id',
         'meeting_pack_id',
         'amount',
+        'currency',
         'quantity',
         'status',
+        'stripe_checkout_session_id',
+        'stripe_payment_intent_id',
+        'stripe_event_id',
         'paid_at',
+        'failed_at',
+        'quota_granted_at',
     ];
 
     protected $casts = [
         'status' => PaymentStatus::class,
-        'paid_at' => 'datetime'
+        'paid_at' => 'datetime',
+        'failed_at' => 'datetime',
+        'quota_granted_at' => 'datetime',
     ];
 
     /**

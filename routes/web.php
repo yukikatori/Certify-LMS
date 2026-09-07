@@ -40,6 +40,7 @@ use App\Http\Controllers\SectionQuizController;
 use App\Http\Controllers\SectionQuizResultController;
 use App\Http\Controllers\Settings\AvailabilityController as SettingsAvailabilityController;
 use App\Http\Controllers\Settings\SettingsDefaultEnrollmentController;
+use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WeakDrillController;
 use App\Http\Controllers\WeakDrillResultController;
@@ -489,7 +490,8 @@ Route::middleware(['auth', 'role:student', 'active-learning'])
         Route::get('success', [MeetingQuotaController::class, 'success'])->name('checkout.success');
     });
 
-
+Route::post('/webhooks/stripe', StripeWebhookController::class)
+    ->name('webhooks.stripe');
 
 // ============================================================
 // 開発専用: 共通コンポーネントショーケース(APP_ENV=local のみ表示)

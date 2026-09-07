@@ -13,16 +13,18 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignUlid('user_id')
-                ->constrained('users')
-                ->OnDelete('cascade');
-            $table->foreignUlid('meeting_pack_id')
-                ->constrained('meeting_packs')
-                ->OnDelete('cascade');
-            $table->integer('amount');
-            $table->integer('quantity');
+            $table->foreignUlid('user_id')->constrained('users')->restrictOnDelete();
+            $table->foreignUlid('meeting_pack_id')->constrained('meeting_packs')->restrictOnDelete();
+            $table->unsignedInteger('amount');
+            $table->string('currency', 3)->default('JPY');
+            $table->unsignedSmallInteger('quantity');
             $table->string('status', 20)->default('pending');
+            $table->string('stripe_checkout_session_id', 255)->nullable()->unique();
+            $table->string('stripe_payment_intent_id', 255)->nullable()->index();
+            $table->string('stripe_event_id', 255)->nullable()->unique();
             $table->timestamp('paid_at')->nullable();
+            $table->timestamp('failed_at')->nullable();
+            $table->timestamp('quota_granted_at')->nullable();
             $table->timestamps();
 
             $table->index(['status']);

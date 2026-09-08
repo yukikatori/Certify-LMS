@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "be1e4df6a84f0048a418959c643b5a65",
+    "content-hash": "3de0ade5d3db1bf4ffd6a3144b574e60",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -6952,6 +6952,71 @@
     ],
     "packages-dev": [
         {
+            "name": "blissjaspis/laravel-query-detector",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/blissjaspis/laravel-query-detector.git",
+                "reference": "e94d5e9d0366bf53508511f39798653a0ac3fa9c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/blissjaspis/laravel-query-detector/zipball/e94d5e9d0366bf53508511f39798653a0ac3fa9c",
+                "reference": "e94d5e9d0366bf53508511f39798653a0ac3fa9c",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^10.0|^11.0|^12.0",
+                "illuminate/support": "^10.0|^11.0|^12.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^8.0|^9.0",
+                "orchestra/testbench": "^8.0|^9.0",
+                "phpunit/phpunit": "^10.0|^11.0|^12.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Querydetector": "BlissJaspis\\QueryDetector\\QueryDetector"
+                    },
+                    "providers": [
+                        "BlissJaspis\\QueryDetector\\QueryDetectorServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "BlissJaspis\\QueryDetector\\": "src",
+                    "Workbench\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bliss Jaspis",
+                    "email": "bliss@jaspis.me",
+                    "homepage": "https://bliss.jaspis.me",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel N+1 Query Detector",
+            "homepage": "https://github.com/blissjaspis/laravel-query-detector",
+            "keywords": [
+                "blissjaspis",
+                "laravel-query-detector"
+            ],
+            "support": {
+                "issues": "https://github.com/blissjaspis/laravel-query-detector/issues",
+                "source": "https://github.com/blissjaspis/laravel-query-detector/tree/1.1.1"
+            },
+            "time": "2025-07-10T04:45:38+00:00"
+        },
+        {
             "name": "fakerphp/faker",
             "version": "v1.24.1",
             "source": {
@@ -9460,12 +9525,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.1"
     },
-    "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "platform-dev": [],
+    "plugin-api-version": "2.6.0"
 }

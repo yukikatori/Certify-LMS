@@ -294,6 +294,13 @@ class User extends Authenticatable
     public function qaReplies(): HasMany
     {
         return $this->hasMany(QaReply::class, 'user_id');
+     * 受講生の追加面談の購入情報 一覧。
+     *
+     * @return HasMany<Payment, $this>
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'user_id');
     }
 
     /**

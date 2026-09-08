@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\UseCases\Learning;
 
+use App\Enums\CertificationStatus;
 use App\Enums\ContentStatus;
+use App\Enums\EnrollmentStatus;
 use App\Models\Part;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -26,8 +28,26 @@ final class ShowPartAction
     {
         $part->loadMissing('certification');
 
-        if ($part->status !== ContentStatus::Published) {
+        // Part が null または Draft → 404
+        if ($part === null || $part->status !== ContentStatus::Published) {
             throw new NotFoundHttpException;
+        }
+
+        // Certification が null または 公開中ではない → 404
+        if ($part->certification === null ||
+            $part->certification->status !== CertificationStatus::Published) {
+            throw new NotFoundHttpException;
+        }
+
+        $enrollment = $student->enrollments()
+            ->where('certification_id', $part->certification_id)
+            ->first();
+
+        if ($enrollment === null || ! in_array($enrollment->status, [
+            EnrollmentStatus::Learning,
+            EnrollmentStatus::Passed,
+        ], true)) {
+            abort(403);
         }
 
         $chapters = $part->chapters()
@@ -38,10 +58,6 @@ final class ShowPartAction
                     ->where('status', ContentStatus::Published->value),
             ])
             ->get();
-
-        $enrollment = $student->enrollments()
-            ->where('certification_id', $part->certification_id)
-            ->first();
 
         $completedByChapter = [];
         if ($enrollment !== null && $chapters->isNotEmpty()) {

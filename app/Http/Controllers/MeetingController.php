@@ -158,7 +158,7 @@ class MeetingController extends Controller
 
     /**
      * 受講生の予約申請。残面談回数を確認し、空き枠から過去実績最少のコーチを自動割当して reserved で確定する。
-     * 同時刻 race condition は (coach_id, scheduled_at) UNIQUE 違反として検知し 409 へ変換する。
+     * 同時刻 race condition はUNIQUE 違反として検知し 409 へ変換する。
      */
     public function store(
         Enrollment $enrollment,
@@ -206,7 +206,7 @@ class MeetingController extends Controller
                     'meeting_url_snapshot' => $coach->meeting_url,
                 ]);
             } catch (UniqueConstraintViolationException $e) {
-                // 同時刻に他受講生が先行予約した race condition: UNIQUE(coach_id, scheduled_at) で弾かれた
+                // 同時刻に他受講生が先行予約した race condition: UNIQUE で弾かれた
                 throw new MeetingNoAvailableCoachException($e);
             }
 
@@ -233,7 +233,7 @@ class MeetingController extends Controller
 
         $actor = auth()->user();
 
-        DB::transaction(function () use ($meeting, $actor) {
+        DB::transaction(function () use ($meeting, $actor, $refundAction) {
             $locked = Meeting::query()->whereKey($meeting->id)->lockForUpdate()->first();
             if ($locked === null || $locked->status !== MeetingStatus::Reserved) {
                 throw MeetingStatusTransitionException::forCancel();
@@ -248,6 +248,8 @@ class MeetingController extends Controller
                 'canceled_by_user_id' => $actor->id,
                 'canceled_at' => now(),
             ]);
+
+            $refundAction($locked->student, (string) $locked->id);
         });
 
         return redirect()

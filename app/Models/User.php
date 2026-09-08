@@ -279,6 +279,21 @@ class User extends Authenticatable
     }
 
     /**
+     * 質問掲示板：ユーザーに紐づく投稿
+     * @return HasMany<QaThread, $this>
+     */
+    public function qaThreads(): HasMany
+    {
+        return $this->hasMany(QaThread::class, 'user_id');
+    }
+
+    /**
+     * 質問掲示板：ユーザーに紐づく返信
+     * @return HasMany<QaReply, $this>
+     */
+    public function qaReplies(): HasMany
+    {
+        return $this->hasMany(QaReply::class, 'user_id');
      * 受講生の追加面談の購入情報 一覧。
      *
      * @return HasMany<Payment, $this>

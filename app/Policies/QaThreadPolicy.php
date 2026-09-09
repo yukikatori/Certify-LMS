@@ -67,6 +67,7 @@ class QaThreadPolicy
             UserRole::Student => 
                 $auth->id === $thread->user->id 
                 && $thread->certification->status === CertificationStatus::Published,
+            UserRole::Coach => false,
             UserRole::Admin => true,
         };
     }

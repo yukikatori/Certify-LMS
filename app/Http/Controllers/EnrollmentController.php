@@ -104,6 +104,10 @@ class EnrollmentController extends Controller
 
         $action($enrollment);
 
+        $enrollment->load([
+            'goals' => fn ($q) => $q->ordered(),
+        ]);
+
         $user = auth()->user();
         $progress = null;
 

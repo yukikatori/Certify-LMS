@@ -22,12 +22,18 @@ final class HandleCheckoutCompletedAction
         $session = $event->data->object;
 
         $paymentId = $session->metadata->payment_id ?? null;
+        $paymentIntentId = $session->payment_intent ?? null;
 
-        if (! is_string($paymentId) || $paymentId === '') {
+        if (
+            ! is_string($paymentId)
+            || $paymentId === ''
+            || ! is_string($paymentIntentId)
+            || $paymentIntentId === ''
+        ) {
             return;
         }
 
-        DB::transaction(function () use ($event, $session, $paymentId): void {
+        DB::transaction(function () use ($session, $paymentId, $paymentIntentId): void {
             $payment = Payment::query()
                 ->where('id', $paymentId)
                 ->lockForUpdate()
@@ -49,15 +55,29 @@ final class HandleCheckoutCompletedAction
                 return;
             }
 
-            if ($payment->stripe_event_id === $event->id || $payment->quota_granted_at !== null) {
+            if (
+                $payment->quota_granted_at !== null
+                || (
+                    $payment->stripe_payment_intent_id !== null
+                    && $payment->stripe_payment_intent_id !== $paymentIntentId
+                )
+            ) {
+                return;
+            }
+
+            $alreadyHandled = Payment::query()
+                ->where('stripe_payment_intent_id', $paymentIntentId)
+                ->whereKeyNot($payment->id)
+                ->exists();
+
+            if ($alreadyHandled) {
                 return;
             }
 
             $payment->update([
                 'status' => PaymentStatus::Succeeded,
                 'stripe_checkout_session_id' => $session->id,
-                'stripe_payment_intent_id' => $session->payment_intent ?? null,
-                'stripe_event_id' => $event->id,
+                'stripe_payment_intent_id' => $paymentIntentId,
                 'paid_at' => now(),
             ]);
 

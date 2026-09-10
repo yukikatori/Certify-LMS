@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * 面談パック詳細表示時に支払いの詳細情報を表示する。
  * 関連: MeetingPack, User
  */
-
 class Payment extends Model
 {
     use HasFactory, HasUlids;
@@ -29,7 +28,6 @@ class Payment extends Model
         'status',
         'stripe_checkout_session_id',
         'stripe_payment_intent_id',
-        'stripe_event_id',
         'paid_at',
         'failed_at',
         'quota_granted_at',

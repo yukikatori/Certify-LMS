@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,8 +22,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('quantity');
             $table->string('status', 20)->default('pending');
             $table->string('stripe_checkout_session_id', 255)->nullable()->unique();
-            $table->string('stripe_payment_intent_id', 255)->nullable()->index();
-            $table->string('stripe_event_id', 255)->nullable()->unique();
+            $table->string('stripe_payment_intent_id', 255)->nullable()->unique();
             $table->timestamp('paid_at')->nullable();
             $table->timestamp('failed_at')->nullable();
             $table->timestamp('quota_granted_at')->nullable();

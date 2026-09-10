@@ -25,7 +25,7 @@ final class HandleCheckoutFailedAction
             return;
         }
 
-        DB::transaction(function () use ($event, $session, $paymentId): void {
+        DB::transaction(function () use ($session, $paymentId): void {
             $payment = Payment::query()
                 ->where('id', $paymentId)
                 ->lockForUpdate()
@@ -51,15 +51,9 @@ final class HandleCheckoutFailedAction
                 return;
             }
 
-            // 同じイベントを再受信しただけなら何もしない
-            if ($payment->stripe_event_id === $event->id) {
-                return;
-            }
-
             $payment->update([
                 'status' => PaymentStatus::Failed,
                 'stripe_checkout_session_id' => $session->id,
-                'stripe_event_id' => $event->id,
                 'failed_at' => now(),
             ]);
         });

@@ -12,6 +12,7 @@ use App\Enums\UserStatus;
 use App\Models\Certificate;
 use App\Models\Certification;
 use App\Models\Enrollment;
+use App\Models\EnrollmentGoal;
 use App\Models\EnrollmentStatusLog;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -152,6 +153,23 @@ final class EnrollmentSeeder extends Seeder
                     'changed_reason' => '新規登録',
                 ],
             );
+
+            if ($index === 0) {
+                $this->seedPersonalGoals($enrollment, [
+                    [
+                        'title' => '基礎講座を一通り終える',
+                        'description' => '第 1 章から最終章までを視聴し、章末問題を復習する。',
+                        'target_date' => now()->addDays(14)->toDateString(),
+                        'achieved_at' => null,
+                    ],
+                    [
+                        'title' => '過去問 1 年分を解き直す',
+                        'description' => '間違えた問題をノートにまとめ、次回面談で相談する。',
+                        'target_date' => now()->addDays(7)->toDateString(),
+                        'achieved_at' => now()->subDays(2),
+                    ],
+                ]);
+            }
         }
     }
 
@@ -201,10 +219,45 @@ final class EnrollmentSeeder extends Seeder
             ]);
 
             $this->seedStatusLogs($enrollment, $pattern['state'], $student);
+            $this->seedPersonalGoals($enrollment, [
+                [
+                    'title' => '今週の学習範囲を決める',
+                    'description' => $i % 2 === 0 ? '教材一覧を確認して、優先して進める章を 2 つ選ぶ。' : null,
+                    'target_date' => now()->addDays(5 + $i)->toDateString(),
+                    'achieved_at' => null,
+                ],
+                [
+                    'title' => '苦手分野を 1 つ復習する',
+                    'description' => '直近の演習結果から復習テーマを選ぶ。',
+                    'target_date' => now()->addDays(10 + $i)->toDateString(),
+                    'achieved_at' => $i % 3 === 0 ? now()->subDays(1) : null,
+                ],
+            ]);
 
             if ($pattern['state'] === 'passed') {
                 $this->issueCertificate($enrollment, $passedAt);
             }
+        }
+    }
+
+    /**
+     * @param array<int, array{title: string, description: ?string, target_date: string, achieved_at: ?Carbon}> $goals
+     */
+    private function seedPersonalGoals(Enrollment $enrollment, array $goals): void
+    {
+        foreach ($goals as $goal) {
+            EnrollmentGoal::firstOrCreate(
+                [
+                    'enrollment_id' => $enrollment->id,
+                    'title' => $goal['title'],
+                ],
+                [
+                    'user_id' => $enrollment->user_id,
+                    'target_date' => $goal['target_date'],
+                    'description' => $goal['description'],
+                    'achieved_at' => $goal['achieved_at'],
+                ],
+            );
         }
     }
 

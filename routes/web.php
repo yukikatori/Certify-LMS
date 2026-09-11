@@ -25,6 +25,7 @@ use App\Http\Controllers\MockExamController;
 use App\Http\Controllers\MockExamQuestionController;
 use App\Http\Controllers\MockExamSessionController;
 use App\Http\Controllers\MockExamSessionMonitorController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PartController;
 use App\Http\Controllers\QaBoardController;
 use App\Http\Controllers\QaBoardManagementController;
@@ -213,7 +214,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('meeting-packs/{plan}/archive', [MeetingPackController::class, 'archive'])
         ->name('admin.meeting-packs.archive');
     Route::post('meeting-packs/{plan}/unarchive', [MeetingPackController::class, 'unarchive'])
-    ->name('admin.meeting-packs.unarchive');
+        ->name('admin.meeting-packs.unarchive');
 });
 
 // ============================================================
@@ -439,6 +440,15 @@ Route::middleware(['auth', 'role:student,coach', 'active-learning'])->group(func
 });
 
 // ============================================================
+// 受講生・コーチ共有 — 通知
+// ============================================================
+Route::middleware('auth')->group(function () {
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+    Route::post('notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+});
+
+// ============================================================
 // 受講生・コーチ共有 — 質問掲示板 (質問の作成、返信など 受講中の受講生、担当コーチのみアクセス可)
 // ============================================================
 Route::middleware(['auth', 'role:student,coach', 'active-learning'])->group(function () {
@@ -450,10 +460,10 @@ Route::middleware(['auth', 'role:student,coach', 'active-learning'])->group(func
     Route::get('qa-board/{thread}/edit', [QaBoardController::class, 'edit'])->name('qa-board.edit');
     Route::patch('qa-board/{thread}', [QaBoardController::class, 'update'])->name('qa-board.update');
     Route::delete('qa-board/{thread}', [QaBoardController::class, 'destroy'])->name('qa-board.destroy');
-    
+
     Route::post('qa-board/{thread}/resolve', [QaBoardController::class, 'resolve'])->name('qa-board.resolve');
     Route::post('qa-board/{thread}/unresolve', [QaBoardController::class, 'unresolve'])->name('qa-board.unresolve');
-    
+
     Route::post('qa-board/{thread}/replies', [QaBoardController::class, 'storeReply'])->name('qa-board.replies.store');
     Route::get('qa-board/{thread}/replies/{reply}/edit', [QaBoardController::class, 'editReply'])->name('qa-board.replies.edit');
     Route::patch('qa-board/{thread}/replies/{reply}', [QaBoardController::class, 'updateReply'])->name('qa-board.replies.update');

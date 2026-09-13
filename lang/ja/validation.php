@@ -120,5 +120,13 @@ return [
 
     'custom' => [],
 
+    'values' => [
+        'target_type' => [
+            'all_students' => '全受講生',
+            'certification' => '資格',
+            'user' => '受講生',
+        ],
+    ],
+
     'attributes' => [],
 ];

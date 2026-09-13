@@ -26,6 +26,7 @@ use App\Http\Controllers\MockExamQuestionController;
 use App\Http\Controllers\MockExamSessionController;
 use App\Http\Controllers\MockExamSessionMonitorController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\AdminNotificationController;
 use App\Http\Controllers\PartController;
 use App\Http\Controllers\QaBoardController;
 use App\Http\Controllers\QaBoardManagementController;
@@ -215,6 +216,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         ->name('admin.meeting-packs.archive');
     Route::post('meeting-packs/{plan}/unarchive', [MeetingPackController::class, 'unarchive'])
         ->name('admin.meeting-packs.unarchive');
+    
+    // お知らせ配信
+    Route::resource('announcements', AdminNotificationController::class)
+        ->except(['edit', 'update', 'destroy'])
+        ->names('admin.announcements');
 });
 
 // ============================================================
@@ -442,8 +448,9 @@ Route::middleware(['auth', 'role:student,coach', 'active-learning'])->group(func
 // ============================================================
 // 受講生・コーチ共有 — 通知
 // ============================================================
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('notifications/{notification}', [NotificationController::class, 'show'])->name('notifications.show');
     Route::post('notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
     Route::post('notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
 });

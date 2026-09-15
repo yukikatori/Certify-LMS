@@ -42,6 +42,7 @@ use App\Http\Controllers\SectionQuizController;
 use App\Http\Controllers\SectionQuizResultController;
 use App\Http\Controllers\Settings\AvailabilityController as SettingsAvailabilityController;
 use App\Http\Controllers\Settings\SettingsDefaultEnrollmentController;
+use App\Http\Controllers\Settings\GoogleCalendarController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WeakDrillController;
 use App\Http\Controllers\WeakDrillResultController;
@@ -510,6 +511,18 @@ Route::middleware(['auth', 'role:coach'])
         Route::post('/', [SettingsAvailabilityController::class, 'store'])->name('store');
         Route::patch('{availability}', [SettingsAvailabilityController::class, 'update'])->name('update');
         Route::delete('{availability}', [SettingsAvailabilityController::class, 'destroy'])->name('destroy');
+    });
+
+// ============================================================
+// コーチ専用ルート — Google Calendar連携
+// ============================================================
+Route::middleware(['auth', 'role:coach'])
+    ->prefix('settings/google-calendar')
+    ->name('settings.google-calendar.')
+    ->group(function () {
+        Route::get('connect', [GoogleCalendarController::class, 'connect'])->name('redirect');
+        Route::get('callback', [GoogleCalendarController::class, 'callback'])->name('callback');
+        Route::delete('/', [GoogleCalendarController::class, 'destroy'])->name('destroy');
     });
 
 // ============================================================

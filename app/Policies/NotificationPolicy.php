@@ -13,6 +13,11 @@ use Illuminate\Notifications\DatabaseNotification;
  */
 class NotificationPolicy
 {
+    public function view(User $user, DatabaseNotification $notification): bool
+    {
+        return $this->belongsToUser($user, $notification);
+    }
+
     public function markAsRead(User $user, DatabaseNotification $notification): bool
     {
         return $this->belongsToUser($user, $notification);

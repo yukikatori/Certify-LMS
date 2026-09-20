@@ -34,6 +34,17 @@ class NotificationController extends Controller
         ]);
     }
 
+    public function show(DatabaseNotification $notification): View
+    {
+        $this->authorize('view', $notification);
+
+        $notification->markAsRead();
+
+        return view('notifications.show', [
+            'notification' => $notification,
+        ]);
+    }
+
     public function markAsRead(
         DatabaseNotification $notification,
         MarkReadAction $action,

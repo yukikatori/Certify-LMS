@@ -27,18 +27,20 @@ class StoreRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:200'],
             'body' => ['required', 'string', 'max:5000'],
-            'target_type' => ['required', Rule::enum(AnnouncementTargetType::class)],
+            'target_type' => ['required', 'string', Rule::in(['all', 'certification', 'user'])],
             'target_certification_id' => [
+                'required_if:target_type,certification',
+                'prohibited_unless:target_type,certification',
                 'nullable',
-                'required_if:target_type,'.AnnouncementTargetType::Certification->value,
                 'ulid',
                 'exists:certifications,id',
             ],
             'target_user_id' => [
+                'required_if:target_type,user',
+                'prohibited_unless:target_type,user',
                 'nullable',
-                'required_if:target_type,'.AnnouncementTargetType::User->value,
                 'ulid',
-                'exists:users,id',
+                Rule::exists('users', 'id')->where('role', 'student'),
             ],
         ];
     }

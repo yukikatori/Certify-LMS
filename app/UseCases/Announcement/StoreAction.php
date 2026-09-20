@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\UseCases\Announcement;
 
 use App\Enums\AnnouncementTargetType;
+use App\Enums\EnrollmentStatus;
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Models\Announcement;
 use App\Models\User;
 use App\Notifications\BusinessEventNotification;
@@ -72,11 +74,16 @@ final class StoreAction
         return match ($targetType) {
             AnnouncementTargetType::AllStudents => User::query()
                 ->where('role', UserRole::Student->value)
+                ->where('status', UserStatus::InProgress->value)
                 ->get(),
 
             AnnouncementTargetType::Certification => User::query()
                 ->where('role', UserRole::Student->value)
-                ->whereHas('enrollments', fn ($q) => $q->where('certification_id', $validated['target_certification_id']))
+                ->where('status', UserStatus::InProgress->value)
+                ->whereHas('enrollments', fn ($q) => $q
+                    ->where('certification_id', $validated['target_certification_id'])
+                    ->where('status', EnrollmentStatus::Learning->value)
+                )
                 ->get(),
 
             AnnouncementTargetType::User => User::query()

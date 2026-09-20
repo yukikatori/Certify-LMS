@@ -6,7 +6,7 @@ namespace App\Enums;
 
 enum AnnouncementTargetType: string
 {
-    case AllStudents = 'all_students';
+    case AllStudents = 'all';
     case Certification = 'certification';
     case User = 'user';
 

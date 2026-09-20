@@ -338,4 +338,13 @@ class User extends Authenticatable
     {
         return $query->whereIn('status', [UserStatus::InProgress, UserStatus::Graduated]);
     }
+
+    /**
+     * Gemini AI チャットボット：ユーザーに紐づく会話一覧
+     * @return HasMany<AiChatConversation, $this>
+     */
+    public function aiChatConversations(): HasMany
+    {
+        return $this->hasMany(AiChatConversation::class, 'user_id');
+    }
 }

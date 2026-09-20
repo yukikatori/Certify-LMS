@@ -51,13 +51,12 @@ class SendMeetingRemindersCommand extends Command
 
     private function eveMeetings(): Builder
     {
-        $start = now()->addDay()->startOfMinute();
-        $end = $start->copy()->addMinute();
-
         return Meeting::query()
             ->where('status', MeetingStatus::Reserved->value)
-            ->where('scheduled_at', '>=', $start)
-            ->where('scheduled_at', '<', $end)
+            ->whereBetween('scheduled_at', [
+                now()->addDay()->startOfDay(),
+                now()->addDay()->endOfDay(),
+            ])
             ->with(['student', 'coach', 'enrollment.certification']);
     }
 

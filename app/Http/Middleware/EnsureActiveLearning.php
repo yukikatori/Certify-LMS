@@ -22,7 +22,7 @@ final class EnsureActiveLearning
     {
         $user = $request->user();
 
-        if ($user === null || $user->status !== UserStatus::InProgress->value) {
+        if ($user === null || $user->status !== UserStatus::InProgress) {
             abort(403, 'プラン期間が満了しました。プラン機能はご利用いただけません。プロフィール / 修了証は引き続きアクセス可能です。');
         }
 

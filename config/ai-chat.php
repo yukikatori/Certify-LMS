@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'enabled' => env('AI_CHAT_ENABLED', false),
 
-    'daily_message_limit' => (int) env('AI_CHAT_DAILY_MESSAGE_LIMIT', 30),
+    'daily_message_limit' => (int) env('AI_CHAT_DAILY_MESSAGE_LIMIT', 50),
 
     'gemini' => [
         'api_key' => env('GEMINI_API_KEY'),

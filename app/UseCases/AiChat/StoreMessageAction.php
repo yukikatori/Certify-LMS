@@ -102,7 +102,7 @@ final class StoreMessageAction
 
     private function assertDailyLimit(User $user): void
     {
-        $limit = (int) config('ai-chat.daily_message_limit', 30);
+        $limit = (int) config('ai-chat.daily_message_limit', 50);
 
         if ($limit <= 0) {
             abort(429);

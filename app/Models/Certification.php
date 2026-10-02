@@ -131,6 +131,7 @@ class Certification extends Model
 
     /**
      * 質問掲示板：資格に紐づく投稿
+     *
      * @return HasMany<QaThread, $this>
      */
     public function qaThreads(): HasMany

@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\DB;
 /**
  * 質問掲示板の質問を更新するユースケース。`status` は本 Action では更新せず、公開状態遷移用 Action に責務分離する。
  */
-
 final class UpdateAction
 {
     /**

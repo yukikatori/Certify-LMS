@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\QaBoard;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Models\QaThread;
+use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * 質問掲示板一覧の絞り込みリクエスト

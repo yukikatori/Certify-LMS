@@ -17,7 +17,7 @@ class SendMeetingRemindersCommand extends Command
 {
     protected $signature = 'notifications:send-meeting-reminders
         {--window= : eve または one_hour_before}';
-    
+
     protected $description = '予約済み面談の前日または開始1時間前リマインダー通知を送信する';
 
     public function handle(SendMeetingReminderAction $action): int

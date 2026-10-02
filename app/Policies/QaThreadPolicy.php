@@ -6,9 +6,8 @@ namespace App\Policies;
 
 use App\Enums\CertificationStatus;
 use App\Enums\UserRole;
-use App\Models\Certification;
-use App\Models\User;
 use App\Models\QaThread;
+use App\Models\User;
 
 /**
  * 質問掲示板投稿の認可ルール
@@ -18,7 +17,6 @@ use App\Models\QaThread;
  * - 受講中の受講生・コーチのみアクセスできる
  * - 管理者は専用画面から、公開停止中の資格を含む全資格のスレッドを横断的に閲覧できる
  */
-
 class QaThreadPolicy
 {
     /**
@@ -64,8 +62,7 @@ class QaThreadPolicy
     public function delete(User $auth, QaThread $thread): bool
     {
         return match ($auth->role) {
-            UserRole::Student => 
-                $auth->id === $thread->user->id 
+            UserRole::Student => $auth->id === $thread->user->id
                 && $thread->certification->status === CertificationStatus::Published,
             UserRole::Coach => false,
             UserRole::Admin => true,
@@ -77,7 +74,7 @@ class QaThreadPolicy
      */
     public function resolve(User $auth, QaThread $thread): bool
     {
-        return $auth->id === $thread->user->id && $thread->certification->status === CertificationStatus::Published;;
+        return $auth->id === $thread->user->id && $thread->certification->status === CertificationStatus::Published;
     }
 
     /**
@@ -85,6 +82,6 @@ class QaThreadPolicy
      */
     public function unresolve(User $auth, QaThread $thread): bool
     {
-        return $auth->id === $thread->user->id && $thread->certification->status === CertificationStatus::Published;;
+        return $auth->id === $thread->user->id && $thread->certification->status === CertificationStatus::Published;
     }
 }

@@ -54,7 +54,7 @@ final class SendMeetingReminderAction
                     ->where('window', $window)
                     ->lockForUpdate()
                     ->first();
-                
+
                 if ($delivery === null || $delivery->delivered_at !== null) {
                     return;
                 }

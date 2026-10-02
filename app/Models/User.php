@@ -280,6 +280,7 @@ class User extends Authenticatable
 
     /**
      * 質問掲示板：ユーザーに紐づく投稿
+     *
      * @return HasMany<QaThread, $this>
      */
     public function qaThreads(): HasMany
@@ -289,6 +290,7 @@ class User extends Authenticatable
 
     /**
      * 質問掲示板：ユーザーに紐づく返信
+     *
      * @return HasMany<QaReply, $this>
      */
     public function qaReplies(): HasMany

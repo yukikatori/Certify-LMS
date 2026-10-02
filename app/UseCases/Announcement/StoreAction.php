@@ -67,6 +67,7 @@ final class StoreAction
 
     /**
      * @param array<string, mixed> $validated
+     *
      * @return Collection<int, User>
      */
     private function resolveRecipients(AnnouncementTargetType $targetType, array $validated): Collection

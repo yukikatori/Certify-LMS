@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\MeetingPack;
 
-use App\Enums\MeetingPackStatus;
 use App\Models\MeetingPack;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 /**
  * 面談パック新規作成リクエスト。admin がSKU名・説明・面談回数・価格・Stripe Price ID・並び順の 6 項目を入力する。

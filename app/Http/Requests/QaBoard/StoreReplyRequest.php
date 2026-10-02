@@ -6,12 +6,10 @@ namespace App\Http\Requests\QaBoard;
 
 use App\Models\QaReply;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 /**
  * 質問掲示板の質問への回答の新規作成リクエスト。受講生/コーチが内容を入力する。
  */
-
 class StoreReplyRequest extends FormRequest
 {
     public function authorize(): bool

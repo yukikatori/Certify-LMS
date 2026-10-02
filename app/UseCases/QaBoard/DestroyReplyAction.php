@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\UseCases\QaBoard;
 
 use App\Models\QaReply;
-use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 /**

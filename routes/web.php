@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\AdminNotificationController;
 use App\Http\Controllers\Auth\OnboardingController;
 use App\Http\Controllers\BrowseController;
 use App\Http\Controllers\CertificationCatalogController;
@@ -26,7 +27,6 @@ use App\Http\Controllers\MockExamQuestionController;
 use App\Http\Controllers\MockExamSessionController;
 use App\Http\Controllers\MockExamSessionMonitorController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\AdminNotificationController;
 use App\Http\Controllers\PartController;
 use App\Http\Controllers\QaBoardController;
 use App\Http\Controllers\QaBoardManagementController;
@@ -216,7 +216,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         ->name('admin.meeting-packs.archive');
     Route::post('meeting-packs/{plan}/unarchive', [MeetingPackController::class, 'unarchive'])
         ->name('admin.meeting-packs.unarchive');
-    
+
     // お知らせ配信
     Route::resource('announcements', AdminNotificationController::class)
         ->except(['edit', 'update', 'destroy'])

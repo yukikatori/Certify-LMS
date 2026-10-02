@@ -7,7 +7,6 @@ namespace App\Enums;
 /**
  * 質問掲示板の質問の解決状態を表すEnum
  */
-
 enum QaThreadStatus: string
 {
     case Unresolved = 'unresolved';

@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * 面談パック詳細表示時に支払いの詳細情報を表示する。
  * 関連: MeetingPack, User
  */
-
 class Payment extends Model
 {
     use HasFactory, HasUlids;
@@ -31,7 +30,7 @@ class Payment extends Model
 
     protected $casts = [
         'status' => PaymentStatus::class,
-        'paid_at' => 'datetime'
+        'paid_at' => 'datetime',
     ];
 
     /**

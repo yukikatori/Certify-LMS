@@ -10,21 +10,19 @@ use App\Http\Requests\MeetingPack\StoreRequest;
 use App\Http\Requests\MeetingPack\UpdateRequest;
 use App\Models\MeetingPack;
 use App\UseCases\MeetingPack\ArchiveAction;
-use App\UseCases\MeetingPack\UnarchiveAction;
-use App\UseCases\MeetingPack\IndexAction;
 use App\UseCases\MeetingPack\DestroyAction;
+use App\UseCases\MeetingPack\IndexAction;
 use App\UseCases\MeetingPack\PublishAction;
 use App\UseCases\MeetingPack\ShowAction;
 use App\UseCases\MeetingPack\StoreAction;
+use App\UseCases\MeetingPack\UnarchiveAction;
 use App\UseCases\MeetingPack\UpdateAction;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 /**
  * admin 用の面談パックマスタ管理画面 Controller。CRUD と公開状態遷移（publish / unpublish / archive）を提供する。
  */
-
 class MeetingPackController extends Controller
 {
     /**

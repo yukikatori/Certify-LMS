@@ -12,7 +12,6 @@ use Illuminate\Validation\Rule;
 /**
  * 質問掲示板の質問新規作成リクエスト。受講生が資格名、タイトル、内容を入力する。
  */
-
 class StoreRequest extends FormRequest
 {
     public function authorize(): bool
@@ -27,8 +26,8 @@ class StoreRequest extends FormRequest
     {
         return [
             'certification_id' => [
-                'required', 
-                'ulid', 
+                'required',
+                'ulid',
                 Rule::exists('certifications', 'id')->where('status', CertificationStatus::Published),
             ],
             'title' => ['required', 'string', 'max:200', 'not_regex:/\x{3000}/u'],

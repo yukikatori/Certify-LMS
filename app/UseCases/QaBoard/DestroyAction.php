@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\DB;
 final class DestroyAction
 {
     /**
-     * @throws QaThreadNotDeletableException 
-     * 投稿者本人は回答がついているスレッドを削除できない
-     * 管理者は任意のスレッドを削除できる
+     * @throws QaThreadNotDeletableException
+     *                                       投稿者本人は回答がついているスレッドを削除できない
+     *                                       管理者は任意のスレッドを削除できる
      */
     public function __invoke(User $user, QaThread $thread): void
     {

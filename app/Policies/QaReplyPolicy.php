@@ -18,7 +18,6 @@ use App\Models\User;
  * - 受講中の受講生・コーチのみアクセスできる
  * - 管理者は専用画面から、公開停止中の資格を含む全資格のスレッドを横断的に閲覧できる
  */
-
 class QaReplyPolicy
 {
     /**
@@ -40,11 +39,9 @@ class QaReplyPolicy
     public function update(User $auth, QaReply $reply): bool
     {
         return match ($auth->role) {
-            UserRole::Student =>
-                $auth->id === $reply->user_id
+            UserRole::Student => $auth->id === $reply->user_id
                 && $reply->thread->certification->status === CertificationStatus::Published,
-            UserRole::Coach =>
-                $auth->id === $reply->user_id
+            UserRole::Coach => $auth->id === $reply->user_id
                 && $reply->thread->certification->coaches->contains('id', $auth->id)
                 && $reply->thread->certification->status === CertificationStatus::Published,
             UserRole::Admin => false,
@@ -57,11 +54,9 @@ class QaReplyPolicy
     public function delete(User $auth, QaReply $reply): bool
     {
         return match ($auth->role) {
-            UserRole::Student =>
-                $auth->id === $reply->user_id
+            UserRole::Student => $auth->id === $reply->user_id
                 && $reply->thread->certification->status === CertificationStatus::Published,
-            UserRole::Coach =>
-                $auth->id === $reply->user_id
+            UserRole::Coach => $auth->id === $reply->user_id
                 && $reply->thread->certification->coaches->contains('id', $auth->id)
                 && $reply->thread->certification->status === CertificationStatus::Published,
             UserRole::Admin => true,

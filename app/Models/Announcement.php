@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * 管理者によるお知らせ配信の Model。
  * 「全受講生」「資格指定」「ユーザー指定」の 3 種類の対象へ通知を送る。
- * 
+ *
  * 関連 : User / Certification
  */
 class Announcement extends Model
@@ -38,7 +38,7 @@ class Announcement extends Model
 
     /**
      * お知らせを配信する際に指定する資格。
-     * 
+     *
      * @return BelongsTo<Certification, $this>
      */
     public function targetCertification(): BelongsTo
@@ -48,7 +48,7 @@ class Announcement extends Model
 
     /**
      * お知らせを配信する際に指定するユーザー。
-     * 
+     *
      * @return BelongsTo<User, $this>
      */
     public function targetUser(): BelongsTo
@@ -58,7 +58,7 @@ class Announcement extends Model
 
     /**
      * お知らせを作成するユーザー。
-     * 
+     *
      * @return BelongsTo<User, $this>
      */
     public function createdBy(): BelongsTo

@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\QaBoard\IndexRequest;
-use App\Http\Requests\QaBoard\StoreRequest;
 use App\Http\Requests\QaBoard\StoreReplyRequest;
-use App\Http\Requests\QaBoard\UpdateRequest;
+use App\Http\Requests\QaBoard\StoreRequest;
 use App\Http\Requests\QaBoard\UpdateReplyRequest;
+use App\Http\Requests\QaBoard\UpdateRequest;
 use App\Models\Certification;
 use App\Models\QaReply;
 use App\Models\QaThread;
@@ -29,22 +28,21 @@ use Illuminate\View\View;
  * 質問掲示板（受講生 / コーチ）のコントローラ
  * - student: 公開済資格すべての掲示板に質問を投稿し、コーチや他受講生から回答を得る。また、他受講生の質問・回答を閲覧する。
  * - coach: 担当資格のスレッドに対して返信を行う
- * 
+ *
  * 管理者モデレーションのためのコントローラは分離する（QaBoardManagementController）
- * 
+ *
  * アクセス制御(機能群共通)
  * - 受講生は公開済資格すべてのスレッドを閲覧・投稿できる
  * - コーチは担当資格のスレッドのみ閲覧・回答でき、担当外の資格は操作できない
  * - 公開停止中の資格のスレッドは受講生・コーチには見えない(管理者は閲覧できる)
  * - 受講中の受講生・コーチのみアクセスできる
  */
-
 class QaBoardController extends Controller
 {
     /**
      * 質問掲示板の一覧表示、フィルタ/ページネーションあり (受講生/コーチ)
      */
-    public function index(IndexRequest $request, IndexAction $action): View 
+    public function index(IndexRequest $request, IndexAction $action): View
     {
         $validated = $request->validated();
 
@@ -62,7 +60,7 @@ class QaBoardController extends Controller
                 'status' => $validated['status'] ?? '',
                 'certification_id' => $validated['certification_id'] ?? '',
             ],
-            'certifications' => $action->certifications($request->user()), 
+            'certifications' => $action->certifications($request->user()),
             'publishedStatus' => $action->publishedStatus($request->user()),
         ]);
     }
@@ -123,7 +121,7 @@ class QaBoardController extends Controller
      */
     public function update(QaThread $thread, UpdateRequest $request, UpdateAction $action): RedirectResponse
     {
-        $action($thread, request()->validated());
+        $action($thread, $request->validated());
 
         return redirect()
             ->route('qa-board.show', $thread)
@@ -147,7 +145,7 @@ class QaBoardController extends Controller
     /**
      * 質問掲示板の質問を解決済に変更 (投稿者のみ)
      */
-    public function resolve(QaThread $thread, ResolveAction $action):RedirectResponse
+    public function resolve(QaThread $thread, ResolveAction $action): RedirectResponse
     {
         $this->authorize('resolve', $thread);
 
@@ -161,7 +159,7 @@ class QaBoardController extends Controller
     /**
      * 質問掲示板の質問を未解決に変更 (投稿者のみ)
      */
-    public function unresolve(QaThread $thread, UnresolveAction $action):RedirectResponse
+    public function unresolve(QaThread $thread, UnresolveAction $action): RedirectResponse
     {
         $this->authorize('unresolve', $thread);
 
@@ -187,10 +185,9 @@ class QaBoardController extends Controller
     /**
      * 質問掲示板の質問への回答の編集画面表示 (投稿者のみ)
      */
-    public function editReply($thread, $reply): View
+    public function editReply(QaThread $thread, QaReply $reply): View
     {
-        $thread = QaThread::findOrFail($thread);
-        $reply = $thread->replies()->findOrFail($reply);
+        abort_unless($reply->qa_thread_id === $thread->id, 404);
 
         $this->authorize('update', $reply);
 
@@ -203,10 +200,9 @@ class QaBoardController extends Controller
     /**
      * 質問掲示板の質問への回答編集 (投稿者のみ)
      */
-    public function updateReply($thread, $reply, UpdateReplyRequest $request, UpdateReplyAction $action): RedirectResponse
+    public function updateReply(QaThread $thread, QaReply $reply, UpdateReplyRequest $request, UpdateReplyAction $action): RedirectResponse
     {
-        $thread = QaThread::findOrFail($thread);
-        $reply = $thread->replies()->findOrFail($reply);
+        abort_unless($reply->qa_thread_id === $thread->id, 404);
 
         $action($reply, $request->validated());
 
@@ -218,10 +214,9 @@ class QaBoardController extends Controller
     /**
      * 質問掲示板の質問への回答削除 (投稿者のみ)
      */
-    public function destroyReply($thread, $reply, DestroyReplyAction $action): RedirectResponse
+    public function destroyReply(QaThread $thread, QaReply $reply, DestroyReplyAction $action): RedirectResponse
     {
-        $thread = QaThread::findOrFail($thread);
-        $reply = $thread->replies()->findOrFail($reply);
+        abort_unless($reply->qa_thread_id === $thread->id, 404);
 
         $this->authorize('delete', $reply);
 

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Enums\QaThreadStatus;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -27,6 +29,7 @@ class QaThread extends Model
 
     /**
      * 質問掲示板：投稿者
+     *
      * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
@@ -36,6 +39,7 @@ class QaThread extends Model
 
     /**
      * 質問掲示板：投稿に紐づく資格
+     *
      * @return BelongsTo<Certification, $this>
      */
     public function certification(): BelongsTo
@@ -45,6 +49,7 @@ class QaThread extends Model
 
     /**
      * 質問掲示板：投稿に紐づく返信
+     *
      * @return HasMany<QaReply, $this>
      */
     public function replies(): HasMany

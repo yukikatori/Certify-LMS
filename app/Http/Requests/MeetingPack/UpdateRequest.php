@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\MeetingPack;
 
-use App\Enums\MeetingPackStatus;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 /**
  * 面談パック更新リクエスト。admin がSKU名・説明・面談回数・価格・Stripe Price ID・並び順の 6 項目を入力する。
@@ -26,10 +24,10 @@ class UpdateRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:100'],
             'description' => ['nullable', 'string', 'max:2000'],
-            'meeting_count' => ['required', 'integer', 'max:100'],
-            'price' => ['required', 'integer', 'max:1000000'],
+            'meeting_count' => ['required', 'integer', 'min:1', 'max:100'],
+            'price' => ['required', 'integer', 'min:0', 'max:1000000'],
             'stripe_price_id' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['required', 'integer', 'max:1000'],
+            'sort_order' => ['nullable', 'integer', 'min:0'],
         ];
     }
 

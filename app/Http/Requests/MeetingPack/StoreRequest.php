@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\MeetingPack;
 
-use App\Enums\MeetingPackStatus;
 use App\Models\MeetingPack;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 /**
  * 面談パック新規作成リクエスト。admin がSKU名・説明・面談回数・価格・Stripe Price ID・並び順の 6 項目を入力する。
@@ -30,7 +28,7 @@ class StoreRequest extends FormRequest
             'meeting_count' => ['required', 'integer', 'min:1', 'max:100'],
             'price' => ['required', 'integer', 'min:0', 'max:1000000'],
             'stripe_price_id' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['required', 'integer', 'min:0'],
+            'sort_order' => ['nullable', 'integer', 'min:0'],
         ];
     }
 

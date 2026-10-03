@@ -12,7 +12,6 @@ use App\Enums\UserStatus;
 use App\Models\Certificate;
 use App\Models\Certification;
 use App\Models\Enrollment;
-use App\Models\EnrollmentGoal;
 use App\Models\EnrollmentStatusLog;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -26,7 +25,6 @@ use Illuminate\Support\Carbon;
  *
  * 1. **固定アカウント**(deterministic): 動作確認・スクショ撮影で安定して参照できる「決まったユーザー」の受講登録を生成する。
  *    - `student@certify-lms.test` を CertificationSeeder 投入の published 資格 4 件に learning で登録(ダッシュボードの合格可能性バンド safe / warning / danger / データ不足 を 1 画面で網羅するため)
- *    - 1 件目に達成済 / 未達成の個人目標を 2 件追加(目標 CRUD・達成マーク UI の即時確認用)
  *    - coach@(`coach1`) / coach2@ / admin@ が固定 student の Enrollment にメモを残す(他コーチ越境拒否シナリオ用)
  *
  * 2. **状態網羅 demo データ**(Factory + state + count): 一覧 / フィルタ / 状態遷移ボタン / 認可境界が各 status で動くことを実機確認する。
@@ -119,7 +117,7 @@ final class EnrollmentSeeder extends Seeder
     }
 
     /**
-     * 固定 student に published 資格 4 件を learning で登録し、1 件目に個人目標 + 各件にコーチメモを添える。
+     * 固定 student に published 資格 4 件を learning で登録する。
      *
      * 4 件にするのは、ダッシュボードの合格可能性バンド(safe / warning / danger / データ不足)を 1 画面で
      * 網羅させるため(各 Enrollment の模試スコアは MockExamSeeder が帯ごとに作り分ける)。
@@ -154,22 +152,6 @@ final class EnrollmentSeeder extends Seeder
                 ],
             );
 
-            if ($index === 0) {
-                $this->seedPersonalGoals($enrollment, [
-                    [
-                        'title' => '基礎講座を一通り終える',
-                        'description' => '第 1 章から最終章までを視聴し、章末問題を復習する。',
-                        'target_date' => now()->addDays(14)->toDateString(),
-                        'achieved_at' => null,
-                    ],
-                    [
-                        'title' => '過去問 1 年分を解き直す',
-                        'description' => '間違えた問題をノートにまとめ、次回面談で相談する。',
-                        'target_date' => now()->addDays(7)->toDateString(),
-                        'achieved_at' => now()->subDays(2),
-                    ],
-                ]);
-            }
         }
     }
 
@@ -219,45 +201,9 @@ final class EnrollmentSeeder extends Seeder
             ]);
 
             $this->seedStatusLogs($enrollment, $pattern['state'], $student);
-            $this->seedPersonalGoals($enrollment, [
-                [
-                    'title' => '今週の学習範囲を決める',
-                    'description' => $i % 2 === 0 ? '教材一覧を確認して、優先して進める章を 2 つ選ぶ。' : null,
-                    'target_date' => now()->addDays(5 + $i)->toDateString(),
-                    'achieved_at' => null,
-                ],
-                [
-                    'title' => '苦手分野を 1 つ復習する',
-                    'description' => '直近の演習結果から復習テーマを選ぶ。',
-                    'target_date' => now()->addDays(10 + $i)->toDateString(),
-                    'achieved_at' => $i % 3 === 0 ? now()->subDays(1) : null,
-                ],
-            ]);
-
             if ($pattern['state'] === 'passed') {
                 $this->issueCertificate($enrollment, $passedAt);
             }
-        }
-    }
-
-    /**
-     * @param array<int, array{title: string, description: ?string, target_date: string, achieved_at: ?Carbon}> $goals
-     */
-    private function seedPersonalGoals(Enrollment $enrollment, array $goals): void
-    {
-        foreach ($goals as $goal) {
-            EnrollmentGoal::firstOrCreate(
-                [
-                    'enrollment_id' => $enrollment->id,
-                    'title' => $goal['title'],
-                ],
-                [
-                    'user_id' => $enrollment->user_id,
-                    'target_date' => $goal['target_date'],
-                    'description' => $goal['description'],
-                    'achieved_at' => $goal['achieved_at'],
-                ],
-            );
         }
     }
 

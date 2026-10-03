@@ -91,6 +91,15 @@ class Enrollment extends Model
     }
 
     /**
+     * 個人目標の一覧
+     * @return HasMany<EnrollmentGoal, $this>
+     */
+    public function goals(): HasMany
+    {
+        return $this->hasMany(EnrollmentGoal::class);
+    }
+
+    /**
      * @return HasMany<MockExamSession, $this>
      */
     public function mockExamSessions(): HasMany

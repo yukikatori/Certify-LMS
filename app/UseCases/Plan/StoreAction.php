@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 final class StoreAction
 {
     /**
-     * @param array{name: string, description?: ?string, duration_days: smallint, default_meeting_quota: smallint, sort_order: integer} $validated
+     * @param array{name: string, description?: ?string, duration_days: smallint, default_meeting_quota: smallint, sort_order?: ?int} $validated
      */
     public function __invoke(User $admin, array $validated): Plan
     {
@@ -24,7 +24,7 @@ final class StoreAction
             'description' => $validated['description'] ?? null,
             'duration_days' => $validated['duration_days'],
             'default_meeting_quota' => $validated['default_meeting_quota'],
-            'sort_order' => $validated['sort_order'],
+            'sort_order' => $validated['sort_order'] ?? 0,
             'status' => PlanStatus::Draft->value,
             'created_by_user_id' => $admin->id,
             'updated_by_user_id' => $admin->id,

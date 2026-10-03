@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\UseCases\Plan;
 
 use App\Enums\PlanStatus;
+use App\Enums\UserStatus;
 use App\Models\Plan;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -20,7 +21,9 @@ final class IndexAction
         int $perPage = 20,
     ): LengthAwarePaginator {
         $query = Plan::query()
-            ->withCount(['users']);
+            ->withCount([
+                'users' => fn ($q) => $q->where('status', UserStatus::InProgress->value),
+            ]);
 
         if ($keyword !== null) {
             $query->where('name', 'LIKE', '%'.$keyword.'%');

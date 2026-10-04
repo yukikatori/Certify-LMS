@@ -17,6 +17,7 @@ use App\Models\Meeting;
 use App\Models\MockExam;
 use App\Models\MockExamQuestion;
 use App\Models\MockExamSession;
+use App\Models\Announcement;
 use App\Models\Part;
 use App\Models\QaReply;
 use App\Models\QaThread;
@@ -43,6 +44,7 @@ use App\Policies\MeetingQuotaPolicy;
 use App\Policies\MockExamPolicy;
 use App\Policies\MockExamQuestionPolicy;
 use App\Policies\MockExamSessionPolicy;
+use App\Policies\AnnouncementPolicy;
 use App\Policies\NotificationPolicy;
 use App\Policies\PartPolicy;
 use App\Policies\PartViewPolicy;
@@ -89,6 +91,7 @@ class AuthServiceProvider extends ServiceProvider
         SectionProgress::class => SectionProgressPolicy::class,
         LearningSession::class => LearningSessionPolicy::class,
         LearningHourTarget::class => LearningHourTargetPolicy::class,
+        Announcement::class => AnnouncementPolicy::class,
         SectionQuestionAnswer::class => SectionQuestionAnswerPolicy::class,
         SectionQuestionAttempt::class => SectionQuestionAttemptPolicy::class,
         Meeting::class => MeetingPolicy::class,

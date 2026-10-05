@@ -132,6 +132,17 @@ worker にコード変更を反映したい場合は再起動シグナルを送�
 sail artisan queue:restart
 ```
 
+## 面談リマインダー通知
+
+予約済み面談には、前日と開始 1 時間前にアプリ内通知とメールを送信します。定期実行は `app/Console/Kernel.php` に登録済みです。
+
+ローカルで定期実行を待たずに確認する場合は、既存の面談データの `scheduled_at` を翌日または 1 時間後に調整してから、以下のコマンドを手動実行してください。追加の初期データ投入は不要です。
+
+```bash
+sail artisan notifications:send-meeting-reminders --window=eve
+sail artisan notifications:send-meeting-reminders --window=one_hour_before
+```
+
 ## テスト
 
 ```bash

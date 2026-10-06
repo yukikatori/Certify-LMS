@@ -12,22 +12,21 @@ use Illuminate\Support\Facades\DB;
 /**
  * 面談パックを新規作成するユースケース。`status=draft` で INSERT し、admin を created_by / updated_by に記録する。
  */
-
 final class StoreAction
 {
     /**
-     * @param array{name: string, description?: ?text, meeting_count: smallint, price: integer, stripe_price_id?: ?string, status: string, sort_order: integer} $validated
+     * @param array{name: string, description?: ?string, meeting_count: int, price: int, stripe_price_id?: ?string, sort_order?: ?int} $validated
      */
     public function __invoke(User $admin, array $validated): MeetingPack
     {
         return DB::transaction(fn () => MeetingPack::create([
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
-            'meeting_count' =>$validated['meeting_count'],
+            'meeting_count' => $validated['meeting_count'],
             'price' => $validated['price'],
             'stripe_price_id' => $validated['stripe_price_id'] ?? null,
             'status' => MeetingPackStatus::Draft->value,
-            'sort_order' => $validated['sort_order'],
+            'sort_order' => $validated['sort_order'] ?? 0,
             'created_by_user_id' => $admin->id,
             'updated_by_user_id' => $admin->id,
         ]));

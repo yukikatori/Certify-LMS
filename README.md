@@ -104,10 +104,34 @@ http://localhost:8000 にアクセスし、下記の[ログインアカウント
 | コーチ | coach@certify-lms.test | IT 系資格の担当 |
 | コーチ | coach2@certify-lms.test | ビジネス系資格の担当 |
 | 受講生 | student@certify-lms.test | 受講中の資格・学習履歴・面談などのデモデータ付き |
+| 受講生 | student-noquota@certify-lms.test | 面談残数 0 の予約拒否・追加購入動線確認用 |
 
 このほか、ライフサイクル（招待中 / 受講中 / 卒業 / 退会）を網羅したデモユーザーが投入されます。
 
 > 本サービスは**招待制**です。公開の会員登録画面はありません。新規ユーザーを作るには、管理者でログイン → ユーザー管理から招待 → Mailpit で招待メールの URL を開く → オンボーディング登録、という流れになります。
+
+## Stripe / 追加面談購入の確認
+
+`migrate:fresh --seed` 後、公開中の面談パックと、状態の異なる購入デモデータが投入されます。
+
+- `student@certify-lms.test` には完了 / 保留 / 失敗の購入記録があります。完了分だけ面談回数履歴に「購入」として表示され、残面談回数に反映されます
+- `student-noquota@certify-lms.test` には保留 / 失敗の購入記録があります。残面談回数は 0 のままなので、予約画面から追加購入導線を確認できます
+- 管理者で「面談パック管理」→ 各パック詳細を開くと、購入記録の状態（完了 / 保留 / 失敗）を確認できます
+
+ローカルで Stripe Webhook を実際に受信する場合は、Stripe CLI を使います。
+
+```bash
+stripe login
+stripe listen --forward-to http://localhost:8000/webhooks/stripe
+```
+
+`stripe listen` が表示する `whsec_...` を `.env` の `STRIPE_WEBHOOK_SECRET` に設定し、Stripe のテスト用 Secret Key を `STRIPE_SECRET` に設定してください。
+
+```bash
+sail artisan config:clear
+```
+
+その後、`student-noquota@certify-lms.test` などの受講生でログインし、`/meeting-quota/checkout` から面談パックを選択して Stripe Checkout に進みます。テストカードは `4242 4242 4242 4242`、将来日付の有効期限、任意の CVC を使用できます。決済完了後、Stripe CLI 経由で `checkout.session.completed` が `/webhooks/stripe` に転送され、完了した購入分だけ残面談回数が加算されます。
 
 ## テスト
 

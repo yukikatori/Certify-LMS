@@ -202,12 +202,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         ->names('admin.meeting-packs');
     Route::post('meeting-packs/{plan}/publish', [MeetingPackController::class, 'publish'])
         ->name('admin.meeting-packs.publish');
-    Route::post('meeting-packs/{plan}/unpublish', [MeetingPackController::class, 'unpublish'])
-        ->name('admin.meeting-packs.unpublish');
     Route::post('meeting-packs/{plan}/archive', [MeetingPackController::class, 'archive'])
         ->name('admin.meeting-packs.archive');
     Route::post('meeting-packs/{plan}/unarchive', [MeetingPackController::class, 'unarchive'])
-    ->name('admin.meeting-packs.unarchive');
+        ->name('admin.meeting-packs.unarchive');
 });
 
 // ============================================================

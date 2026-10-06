@@ -27,9 +27,9 @@ class AiChatMessage extends Model
         'error_detail',
         'model',
         'prompt_tokens',
-        'completion_tokens',
+        'output_tokens',
         'total_tokens',
-        'latency_ms',
+        'response_time_ms',
     ];
 
     protected $casts = [

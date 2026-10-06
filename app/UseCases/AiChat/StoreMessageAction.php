@@ -62,9 +62,9 @@ final class StoreMessageAction
                     'status' => AiChatMessageStatus::Completed,
                     'model' => $response->model,
                     'prompt_tokens' => $response->promptTokens,
-                    'completion_tokens' => $response->completionTokens,
+                    'output_tokens' => $response->completionTokens,
                     'total_tokens' => $response->totalTokens,
-                    'latency_ms' => $response->latencyMs,
+                    'response_time_ms' => $response->latencyMs,
                 ]);
 
                 $conversation->forceFill([
@@ -128,8 +128,8 @@ final class StoreMessageAction
             'content' => $message->content,
             'status' => $message->status->value,
             'model' => $message->model,
-            'response_time_ms' => $message->latency_ms,
-            'output_tokens' => $message->completion_tokens,
+            'response_time_ms' => $message->response_time_ms,
+            'output_tokens' => $message->output_tokens,
             'created_at' => $message->created_at?->toISOString(),
         ];
     }

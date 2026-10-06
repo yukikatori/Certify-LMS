@@ -8,7 +8,7 @@
 
 | ロール | 機能 |
 |---|---|
-| 受講生（student） | 教材閲覧 / 演習問題・苦手分野ドリル / 模擬試験（分野別ヒートマップ・合格可能性スコア）/ 面談予約 / チャット / 学習時間・進捗・ストリーク管理 / 修了証の受領 |
+| 受講生（student） | 教材閲覧 / 演習問題・苦手分野ドリル / 模擬試験（分野別ヒートマップ・合格可能性スコア）/ AI 相談（Gemini）/ 面談予約 / チャット / 学習時間・進捗・ストリーク管理 / 修了証の受領 |
 | コーチ（coach） | 教材・演習問題・模試の管理 / 担当受講生の進捗フォロー / 面談対応・面談メモ / チャット |
 | 管理者（admin） | ユーザー招待・管理 / 資格・資格分類マスタ管理 / 資格へのコーチ割当 / 面談回数の付与 / 全体ダッシュボード |
 
@@ -109,6 +109,24 @@ http://localhost:8000 にアクセスし、下記の[ログインアカウント
 
 > 本サービスは**招待制**です。公開の会員登録画面はありません。新規ユーザーを作るには、管理者でログイン → ユーザー管理から招待 → Mailpit で招待メールの URL を開く → オンボーディング登録、という流れになります。
 
+## AI 相談（Gemini）
+
+受講中の受講生は、画面右下のフローティングウィジェットまたは `/ai-chat` から Gemini に学習相談できます。教材 Section 画面から開始した会話には閲覧中 Section の文脈が紐づき、それ以外の画面ではデフォルト受講資格の文脈で相談を開始します。
+
+AI 相談は `AI_CHAT_ENABLED` で機能全体を ON/OFF できます。OFF の場合、関連 UI は表示されず、AI 相談ルートも利用できません。
+
+Gemini API を実際に呼び出すには、`.env` に `GEMINI_API_KEY` を設定してください。未設定のままでも画面確認はできますが、メッセージ送信時には「Gemini API キーが未設定」の案内が表示されます。
+
+```env
+AI_CHAT_ENABLED=true
+AI_CHAT_DAILY_MESSAGE_LIMIT=50
+
+GEMINI_API_KEY=
+GEMINI_MODEL=gemini-3.6-flash
+GEMINI_BASE_URL=https://generativelanguage.googleapis.com/v1beta
+GEMINI_TIMEOUT=30
+```
+
 ## テスト
 
 ```bash
@@ -141,5 +159,9 @@ sail bin pint --test     # 整形漏れの確認（CI 相当のチェック）
 `.env.example` をコピーするだけで、すべての機能がローカルで動作します（メールは Mailpit に配信されます）。
 
 - `PUSHER_*` — チャットのリアルタイム配信に使用します。有効にする場合は Pusher のキーを取得して設定し、`BROADCAST_DRIVER=pusher` に変更してください。未設定（既定の `BROADCAST_DRIVER=log`）でもメッセージの送受信自体は動作し、相手画面へのリアルタイム反映のみ行われません
+- `AI_CHAT_ENABLED` — AI 相談機能の ON/OFF を切り替えます。`false` の場合は UI とルートが無効になります
+- `AI_CHAT_DAILY_MESSAGE_LIMIT` — 受講生 1 人あたりの 1 日の送信上限です。失敗した送信も上限にカウントされます
+- `GEMINI_API_KEY` — Gemini API キーです。未設定の場合、AI 応答は生成されず未設定案内が表示されます
+- `GEMINI_MODEL` / `GEMINI_BASE_URL` / `GEMINI_TIMEOUT` — Gemini API のモデル名・エンドポイント・タイムアウト秒数です
 
 新しい環境変数やセットアップ手順を追加した場合は、`.env.example` と本 README に追記し、チームの誰でも環境を再現できる状態を保ってください。

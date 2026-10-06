@@ -26,9 +26,9 @@ return new class extends Migration
 
             $table->string('model', 100)->nullable();
             $table->unsignedInteger('prompt_tokens')->nullable();
-            $table->unsignedInteger('completion_tokens')->nullable();
+            $table->unsignedInteger('output_tokens')->nullable();
             $table->unsignedInteger('total_tokens')->nullable();
-            $table->unsignedInteger('latency_ms')->nullable();
+            $table->unsignedInteger('response_time_ms')->nullable();
 
             $table->timestamps();
 

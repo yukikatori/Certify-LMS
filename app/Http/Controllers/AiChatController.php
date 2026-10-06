@@ -37,11 +37,27 @@ class AiChatController extends Controller
         return view('ai-chat.empty-state');
     }
 
-    public function show(AiChatConversation $conversation, ShowAction $action): View
+    public function show(Request $request, AiChatConversation $conversation, ShowAction $action): View|JsonResponse
     {
         $this->authorize('view', $conversation);
 
         $conversation = $action($conversation);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'conversation' => [
+                    'id' => $conversation->id,
+                    'title' => $conversation->title,
+                ],
+                'messages' => $conversation->messages->map(fn ($message): array => [
+                    'id' => $message->id,
+                    'role' => $message->role->value,
+                    'content' => $message->content,
+                    'status' => $message->status->value,
+                    'created_at' => $message->created_at?->toISOString(),
+                ])->values(),
+            ]);
+        }
 
         return view('ai-chat.show', [
             'conversation' => $conversation,

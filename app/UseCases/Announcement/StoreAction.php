@@ -88,6 +88,7 @@ final class StoreAction
 
             AnnouncementTargetType::User => User::query()
                 ->where('role', UserRole::Student->value)
+                ->where('status', UserStatus::InProgress->value)
                 ->whereKey($validated['target_user_id'])
                 ->get(),
         };

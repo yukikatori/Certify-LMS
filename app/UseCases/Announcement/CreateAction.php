@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\UseCases\Announcement;
 
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Models\Certification;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -29,6 +30,7 @@ final class CreateAction
 
             'students' => User::query()
                 ->where('role', UserRole::Student)
+                ->where('status', UserStatus::InProgress->value)
                 ->orderBy('name')
                 ->get(),
         ];
